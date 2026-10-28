@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_PUBLIC_API_BASE_URL: http://localhost:4000
+  NEXT_PUBLIC_SITE_URL: http://localhost:3000
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  # Browser tests need the API too: check out ohviana-apis next to this repo, as locally.
+  # A private ohviana-apis needs a token with read access, stored as OHVIANA_APIS_TOKEN.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: check
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ohviana
+      SUPABASE_URL: https://ci-placeholder.supabase.co
+      OHVIANA_APIS_DIR: apis
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ohviana
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/ohviana-apis
+          path: apis
+          token: ${{ secrets.OHVIANA_APIS_TOKEN || github.token }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm run sync:contracts:check
+      - run: npm ci
+      - run: npm ci && npm run db:migrate && npm run db:seed && npm run build
+        working-directory: apis
+      - run: npm run build
+      - run: npx -w @ohviana/e2e playwright install --with-deps chromium
+      - run: npm run e2e
+        env:
+          CI: 'true'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: e2e/playwright-report
+          retention-days: 7

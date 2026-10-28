@@ -1,0 +1,11 @@
+node_modules
+dist
+.next
+coverage
+package-lock.json
+*.pdf
+next-env.d.ts
+test-results
+playwright-report
+marketing
+ohviana_brand_assets
