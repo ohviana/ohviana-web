@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo } from 'react';
 import { ErrorResponse, OrganizerProfile } from '@ohviana/contracts';
 import { logoSrc } from '@/lib/media';
 import { authHeader } from '@/lib/session';
+import { shrinkForUpload } from '@/lib/upload-image';
 import { Icon } from './Icon';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
@@ -25,7 +26,7 @@ export const logoChoice = (current: string | null): LogoChoice => ({
 /** Uploads a logo for `organizerId` (multipart) and returns the updated profile. */
 export async function uploadLogo(organizerId: string, file: File): Promise<OrganizerProfile> {
   const form = new FormData();
-  form.append('file', file);
+  form.append('file', await shrinkForUpload(file));
   const res = await fetch(`${API_BASE_URL}/v1/organizer/profile/logo`, {
     method: 'POST',
     headers: { ...(await authHeader()), 'x-organizer-id': organizerId },

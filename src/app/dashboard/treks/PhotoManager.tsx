@@ -8,6 +8,7 @@ import { useOrg } from '@/components/dash/org-context';
 import { Outcome } from '@/components/dash/ui';
 import { mediaUrl } from '@/lib/media';
 import { authHeader } from '@/lib/session';
+import { shrinkForUpload } from '@/lib/upload-image';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
 /** Photos per trek, the same as on the add-trek form. The first is the cover. */
@@ -24,7 +25,7 @@ export async function uploadTrekPhoto(
   const form = new FormData();
   form.append('category', category);
   form.append('caption', '');
-  form.append('file', file);
+  form.append('file', await shrinkForUpload(file));
   const res = await fetch(`${API_BASE_URL}/v1/organizer/treks/${trekId}/photos`, {
     method: 'POST',
     headers: { ...(await authHeader()), 'x-organizer-id': organizerId },

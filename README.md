@@ -46,7 +46,20 @@ npm run dev            # http://localhost:3000
 
 ## Deploying
 
-A plain Next.js app at the repository root (Vercel: framework Next.js, no root directory). Set
-`NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_AUTH_MODE`,
-`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`; they are built into the
-site, so redeploy after changing them. The site never holds database or API secrets.
+A plain Next.js app at the repository root, deployed as its own Vercel project (framework
+Next.js, no root directory; `vercel.json` pins functions to Mumbai, `bom1`, next to the API and
+database). The API is a separate Vercel project from ohviana-apis, at `https://api.ohviana.com`.
+
+Set these in Vercel → Project → Settings → Environment Variables (Production):
+
+| Variable                               | Production value                       |
+| -------------------------------------- | -------------------------------------- |
+| `NEXT_PUBLIC_API_BASE_URL`             | `https://api.ohviana.com`              |
+| `NEXT_PUBLIC_SITE_URL`                 | `https://ohviana.com`                  |
+| `NEXT_PUBLIC_AUTH_MODE`                | `password`                             |
+| `NEXT_PUBLIC_SUPABASE_URL`             | `https://<project-ref>.supabase.co`    |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | the publishable key (never the secret) |
+
+They are built into the site, so redeploy after changing them. The site never holds database or
+API secrets. Photos over 4 MB are shrunk in the browser before upload, because Vercel refuses
+request bodies over 4.5 MB.
