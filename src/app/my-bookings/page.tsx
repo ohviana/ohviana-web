@@ -6,6 +6,7 @@ import { MyBookingList, type CustomerBooking } from '@ohviana/contracts';
 import { AccountStrip } from '@/components/AccountStrip';
 import { BookingView } from '@/components/BookingView';
 import { PhoneSignIn } from '@/components/PhoneSignIn';
+import { TripReviews } from '@/components/TripReviews';
 import { apiFetch } from '@/lib/api';
 import { authHeader, onAuthChange } from '@/lib/session';
 
@@ -50,6 +51,7 @@ export default function MyBookingsPage() {
         </div>
       )}
       {state.kind === 'error' && <p className="notice danger">Could not load your bookings.</p>}
+      {state.kind === 'ready' && <TripReviews />}
       {state.kind === 'ready' &&
         (state.items.length === 0 ? (
           <p className="muted">

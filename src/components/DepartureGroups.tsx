@@ -6,6 +6,7 @@ import type { PublicBatch } from '@ohviana/contracts';
 import { IST, dateTime, durationLabel, price, seatsLabel } from '@/lib/format';
 import { logoSrc, mediaUrl } from '@/lib/media';
 import { Icon } from './Icon';
+import { RatingBadge } from './Stars';
 
 /** Cards shown per day before "+ N more" (one row on a laptop). */
 const ROW = 4;
@@ -155,6 +156,7 @@ function DepartureCard({
             <span className="verified" title="Verified by Ohviana">
               <Icon name="shield" size={14} />
             </span>
+            <RatingBadge rating={b.organizer.rating} />
           </Link>
         ) : (
           // On a trek's page the organizer is what people compare: lead with them.
@@ -164,6 +166,7 @@ function DepartureCard({
               <strong>{b.organizer.name}</strong>
               <span className="small departure-verified">
                 <Icon name="shield" size={13} /> Verified organizer
+                <RatingBadge rating={b.organizer.rating} />
               </span>
             </span>
           </Link>

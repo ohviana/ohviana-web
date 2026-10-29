@@ -21,6 +21,7 @@ const NAV: (NavItem & { needs: OrgPermission })[] = [
   { href: '/dashboard', label: 'Overview', icon: 'grid', needs: 'org:read' },
   { href: '/dashboard/batches', label: 'Batches', icon: 'calendar', needs: 'batches:read' },
   { href: '/dashboard/treks', label: 'Treks', icon: 'mountain', needs: 'org:read' },
+  { href: '/dashboard/reviews', label: 'Reviews', icon: 'star', needs: 'bookings:read' },
   { href: '/dashboard/team', label: 'Team', icon: 'users', needs: 'org:manage_members' },
   { href: '/dashboard/profile', label: 'Profile', icon: 'building', needs: 'org:read' },
 ];

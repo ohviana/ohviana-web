@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { PublicBatchList, PublicOrganizerDetail } from '@ohviana/contracts';
+import { PublicBatchList, PublicOrganizerDetail, PublicReviewPage } from '@ohviana/contracts';
 import { DepartureGroups, OrgMark } from '@/components/DepartureGroups';
 import { Icon, type IconName } from '@/components/Icon';
+import { RatingBadge, RatingSummaryCard, ReviewCard } from '@/components/Stars';
 import { apiFetch, apiFetchOrNotFound, qs } from '@/lib/api';
 import { one, type SearchParams } from '@/lib/params';
 
@@ -10,6 +11,8 @@ type Params = Promise<{ slug: string }>;
 
 /** Departures fetched per page; grouped by day on screen. */
 const PAGE = 40;
+/** Reviews per page. */
+const REVIEWS = 10;
 
 const getOrganizer = (slug: string) =>
   apiFetchOrNotFound(`/v1/organizers/${encodeURIComponent(slug)}`, PublicOrganizerDetail, {
@@ -35,14 +38,23 @@ export default async function OrganizerPage({
   searchParams: SearchParams;
 }) {
   const { slug } = await params;
-  const cursor = one((await searchParams).cursor);
+  const query = await searchParams;
+  const cursor = one(query.cursor);
+  const reviewCursor = one(query.reviews);
 
   const o = await getOrganizer(slug);
-  const batches = await apiFetch(
-    `/v1/organizers/${encodeURIComponent(slug)}/batches${qs({ cursor, limit: PAGE })}`,
-    PublicBatchList,
-    { next: { revalidate: 30 } },
-  ).catch(() => null);
+  const [batches, reviews] = await Promise.all([
+    apiFetch(
+      `/v1/organizers/${encodeURIComponent(slug)}/batches${qs({ cursor, limit: PAGE })}`,
+      PublicBatchList,
+      { next: { revalidate: 30 } },
+    ).catch(() => null),
+    apiFetch(
+      `/v1/organizers/${encodeURIComponent(slug)}/reviews${qs({ cursor: reviewCursor, limit: REVIEWS })}`,
+      PublicReviewPage,
+      { next: { revalidate: 60 } },
+    ).catch(() => null),
+  ]);
 
   // A brand-new organizer's zeros say nothing good: show their record once they have one.
   const isNew = o.stats.completedBatches === 0;
@@ -77,6 +89,7 @@ export default async function OrganizerPage({
               <Icon name="shield" size={13} /> Verified organizer
             </span>
             {isNew && <span className="badge warn">New on Ohviana</span>}
+            <RatingBadge rating={o.rating} />
           </span>
           <h1 style={{ margin: 0 }}>{o.name}</h1>
           {o.tagline && (
@@ -138,6 +151,27 @@ export default async function OrganizerPage({
           </>
         )}
       </section>
+
+      {reviews && reviews.items.length > 0 && (
+        <section className="stack" id="reviews">
+          <h2 style={{ margin: 0 }}>Reviews from trekkers</h2>
+          {reviews.summary && !reviewCursor && (
+            <RatingSummaryCard summary={reviews.summary} name={o.name} />
+          )}
+          {reviews.items.map((r) => (
+            <ReviewCard key={r.id} review={r} orgName={o.name} />
+          ))}
+          {reviews.nextCursor && (
+            <Link
+              className="btn secondary"
+              style={{ alignSelf: 'flex-start' }}
+              href={`/organizers/${o.slug}${qs({ reviews: reviews.nextCursor })}#reviews`}
+            >
+              More reviews →
+            </Link>
+          )}
+        </section>
+      )}
     </div>
   );
 }
