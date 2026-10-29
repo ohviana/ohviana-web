@@ -1,6 +1,31 @@
 import { describe, expect, it } from 'vitest';
-import { dateRange, dateTime, dateTimeIst, price, seatsLabel, todayIst } from './format';
+import {
+  dateRange,
+  dateTime,
+  dateTimeIst,
+  price,
+  seatsLabel,
+  thisAndNextWeekIst,
+  todayIst,
+} from './format';
 import { toE164 } from './phone';
+
+describe('thisAndNextWeekIst', () => {
+  it('runs from today to Sunday of next week, in IST', () => {
+    // Thursday 29 Oct → Sunday 8 Nov.
+    expect(thisAndNextWeekIst(new Date('2026-10-29T04:30:00Z'))).toEqual({
+      from: '2026-10-29',
+      to: '2026-11-08',
+    });
+    // On a Sunday, "this week" ends today: through the following Sunday.
+    expect(thisAndNextWeekIst(new Date('2026-11-01T06:00:00Z')).to).toBe('2026-11-08');
+    // 1:30 am Monday IST is still Sunday in UTC: the IST day counts.
+    expect(thisAndNextWeekIst(new Date('2026-11-01T20:00:00Z'))).toEqual({
+      from: '2026-11-02',
+      to: '2026-11-15',
+    });
+  });
+});
 
 describe('toE164', () => {
   it.each([

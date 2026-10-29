@@ -5,13 +5,31 @@ import { Mountains } from '@/components/Mountains';
 import { SearchForm, thisWeekend } from '@/components/SearchForm';
 import { TrekCard } from '@/components/TrekCard';
 import { apiFetch, qs } from '@/lib/api';
+import { thisAndNextWeekIst } from '@/lib/format';
 
 export const revalidate = 60;
 
+/** Treks shown under "Popular right now". */
+const POPULAR = 3;
+
 export default async function HomePage() {
-  const treks = await apiFetch('/v1/treks?limit=3', PublicTrekList, {
+  // Popular = treks you can go on soon: bookable departures this week or next week
+  // (treks without dates are "Coming Soon" and stay on the all-treks page).
+  const soon = thisAndNextWeekIst();
+  const treks = await apiFetch(`/v1/treks${qs({ ...soon, limit: 50 })}`, PublicTrekList, {
     next: { revalidate: 60 },
-  }).catch(() => null);
+  })
+    .then((list) => ({
+      ...list,
+      items: [...list.items]
+        .sort((a, b) =>
+          (a.availability.nextDepartureAt ?? '').localeCompare(
+            b.availability.nextDepartureAt ?? '',
+          ),
+        )
+        .slice(0, POPULAR),
+    }))
+    .catch(() => null);
   const weekend = thisWeekend();
 
   return (
@@ -79,8 +97,10 @@ export default async function HomePage() {
                 <span className="icon-circle">
                   <Icon name="mountain" size={26} />
                 </span>
-                <strong>Treks are coming soon</strong>
-                <span className="muted small">Organizers are adding their departures.</span>
+                <strong>No departures this week or next</strong>
+                <span className="muted small">
+                  Organizers are adding new dates. <Link href="/search">See all treks</Link>
+                </span>
               </div>
             ) : (
               <div className="grid-cards">

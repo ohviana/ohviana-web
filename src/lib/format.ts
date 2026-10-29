@@ -68,6 +68,15 @@ export function todayIst(now = new Date()): string {
   return now.toLocaleDateString('en-CA', { timeZone: IST });
 }
 
+/** Today through Sunday of next week (weeks run Monday–Sunday), as IST dates. */
+export function thisAndNextWeekIst(now = new Date()): { from: string; to: string } {
+  const from = todayIst(now);
+  const today = new Date(`${from}T00:00:00Z`);
+  const toSunday = (7 - today.getUTCDay()) % 7; // 0 when today is Sunday
+  const to = new Date(today.getTime() + (toSunday + 7) * 86_400_000);
+  return { from, to: to.toISOString().slice(0, 10) };
+}
+
 export function seatsLabel(seatsLeft: number): string {
   if (seatsLeft === 0) return 'Sold out';
   if (seatsLeft <= 5) return `Only ${seatsLeft} left`;
