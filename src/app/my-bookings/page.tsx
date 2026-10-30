@@ -55,7 +55,7 @@ export default function MyBookingsPage() {
       {state.kind === 'ready' &&
         (state.items.length === 0 ? (
           <p className="muted">
-            No bookings yet. <Link href="/search">Find a trek</Link>
+            No bookings yet. <Link href="/search">Find a trip</Link>
           </p>
         ) : (
           state.items.map((b) => (

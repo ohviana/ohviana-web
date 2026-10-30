@@ -38,18 +38,18 @@ function AuthSide() {
         Ohviana
       </span>
       <h2 style={{ color: '#fff', fontSize: '1.7rem', margin: 0 }}>
-        Your treks, departures and bookings — in one place.
+        Your trips, departures and bookings — in one place.
       </h2>
       <ul className="check-list">
         <li>
-          <Icon name="check" size={16} /> Organizers: list treks, publish departures, share booking
+          <Icon name="check" size={16} /> Organizers: list trips, publish departures, share booking
           links
         </li>
         <li>
-          <Icon name="check" size={16} /> See attendees and download lists for trek leaders
+          <Icon name="check" size={16} /> See attendees and download lists for trip leaders
         </li>
         <li>
-          <Icon name="check" size={16} /> Trekkers: keep all your bookings in one account
+          <Icon name="check" size={16} /> Travellers: keep all your bookings in one account
         </li>
       </ul>
     </aside>

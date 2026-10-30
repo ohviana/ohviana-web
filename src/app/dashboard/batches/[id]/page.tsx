@@ -168,7 +168,7 @@ export default function BatchDetailPage() {
       </div>
       {b.status === 'draft' && trek.data && !trek.data.catalogTrekId && (
         <p className="notice warn small" style={{ margin: 0 }}>
-          Add the trek&apos;s destination before publishing.{' '}
+          Add the trip&apos;s destination before publishing.{' '}
           <Link href={`/dashboard/treks/${trek.data.id}`}>Open “{trek.data.title}”</Link>
         </p>
       )}
@@ -194,7 +194,7 @@ export default function BatchDetailPage() {
 
       {b.leads.length > 0 && (
         <section className="card stack" style={{ gap: 8 }}>
-          <h2 style={{ margin: 0 }}>Trek leads</h2>
+          <h2 style={{ margin: 0 }}>Trip leads</h2>
           {b.leads.map((l) => (
             <div key={l.phone} className="spread small">
               <strong>{l.name}</strong>
@@ -407,7 +407,7 @@ function EditBatch({
     for (const l of leads.filter((x) => x.name.trim() || x.phone.trim())) {
       const phone = toE164(l.phone);
       if (!l.name.trim() || !phone) {
-        return action.setError('Give each trek lead a name and a valid mobile number.');
+        return action.setError('Give each trip lead a name and a valid mobile number.');
       }
       nextLeads.push({ name: l.name.trim(), phone });
     }
@@ -498,7 +498,7 @@ function EditBatch({
         <strong className="small">Pickup times</strong>
         {!trek || trek.pickupPoints.length === 0 ? (
           <span className="small muted">
-            No pickup points on this trek yet. Add them when adding dates, or under Edit trek.
+            No pickup points on this trip yet. Add them when adding dates, or under Edit trip.
           </span>
         ) : (
           <>
@@ -522,18 +522,18 @@ function EditBatch({
       </div>
 
       <div className="stack" style={{ gap: 8 }}>
-        <strong className="small">Trek leads</strong>
+        <strong className="small">Trip leads</strong>
         {leads.map((l, i) => (
           <div key={l.key} className="row-inputs">
             <input
-              aria-label={`Trek lead ${i + 1} name`}
+              aria-label={`Trip lead ${i + 1} name`}
               maxLength={80}
               placeholder="Name"
               value={l.name}
               onChange={(e) => setLead(l.key, 'name', e.target.value)}
             />
             <input
-              aria-label={`Trek lead ${i + 1} mobile`}
+              aria-label={`Trip lead ${i + 1} mobile`}
               type="tel"
               inputMode="tel"
               placeholder="Mobile, e.g. 98450 12345"
@@ -543,7 +543,7 @@ function EditBatch({
             <button
               type="button"
               className="small secondary"
-              aria-label={`Remove trek lead ${i + 1}`}
+              aria-label={`Remove trip lead ${i + 1}`}
               onClick={() => setLeads(leads.filter((x) => x.key !== l.key))}
             >
               <Icon name="x" size={16} />
@@ -557,7 +557,7 @@ function EditBatch({
             style={{ alignSelf: 'flex-start' }}
             onClick={() => setLeads([...leads, { key: leadKey++, name: '', phone: '' }])}
           >
-            + Add trek lead
+            + Add trip lead
           </button>
         )}
       </div>

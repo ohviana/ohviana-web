@@ -113,8 +113,8 @@ export default function ReviewPage() {
             : 'You have already reviewed this trip.'}
         </strong>
         <p className="muted small" style={{ margin: 0 }}>
-          It helps other trekkers choose. Reviews can&apos;t be changed later, so everyone can trust
-          them.
+          It helps other travellers choose. Reviews can&apos;t be changed later, so everyone can
+          trust them.
         </p>
         <span className="cluster" style={{ justifyContent: 'center' }}>
           <Link className="btn secondary" href={`/organizers/${trip.organizer.slug}`}>
@@ -173,7 +173,7 @@ export default function ReviewPage() {
 
         <div className="field">
           <label htmlFor="r-comment">
-            Tell other trekkers about it <span className="muted small">(optional)</span>
+            Tell other travellers about it <span className="muted small">(optional)</span>
           </label>
           <textarea
             id="r-comment"

@@ -22,9 +22,9 @@ const getOrganizer = (slug: string) =>
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const o = await getOrganizer((await params).slug);
   return {
-    title: `${o.name} — trek departures`,
+    title: `${o.name} — trip departures`,
     description:
-      o.tagline ?? `Upcoming trek departures by ${o.name}${o.city ? `, ${o.city}` : ''}.`,
+      o.tagline ?? `Upcoming trip departures by ${o.name}${o.city ? `, ${o.city}` : ''}.`,
     alternates: { canonical: `/organizers/${o.slug}` },
   };
 }
@@ -63,18 +63,18 @@ export default async function OrganizerPage({
       hide: isNew,
       icon: 'check',
       value: o.stats.completedBatches.toLocaleString('en-IN'),
-      label: o.stats.completedBatches === 1 ? 'trek completed' : 'treks completed',
+      label: o.stats.completedBatches === 1 ? 'trip completed' : 'trips completed',
     },
     {
       hide: isNew,
       icon: 'users',
       value: o.stats.trekkersHosted.toLocaleString('en-IN'),
-      label: o.stats.trekkersHosted === 1 ? 'trekker hosted' : 'trekkers hosted',
+      label: o.stats.trekkersHosted === 1 ? 'traveller hosted' : 'travellers hosted',
     },
     {
       icon: 'mountain',
       value: o.stats.treksOffered.toLocaleString('en-IN'),
-      label: o.stats.treksOffered === 1 ? 'trek offered' : 'treks offered',
+      label: o.stats.treksOffered === 1 ? 'trip offered' : 'trips offered',
     },
     { icon: 'calendar', value: String(o.upcomingBatchCount), label: 'upcoming departures' },
   ];
@@ -154,7 +154,7 @@ export default async function OrganizerPage({
 
       {reviews && reviews.items.length > 0 && (
         <section className="stack" id="reviews">
-          <h2 style={{ margin: 0 }}>Reviews from trekkers</h2>
+          <h2 style={{ margin: 0 }}>Reviews from travellers</h2>
           {reviews.summary && !reviewCursor && (
             <RatingSummaryCard summary={reviews.summary} name={o.name} />
           )}

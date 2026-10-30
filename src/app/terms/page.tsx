@@ -8,7 +8,7 @@ export default function Page() {
   return (
     <ComingSoon
       title="Terms of service"
-      intro="The terms for using Ohviana and booking treks through it."
+      intro="The terms for using Ohviana and booking trips through it."
     />
   );
 }

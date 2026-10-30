@@ -37,13 +37,13 @@ export default async function HomePage() {
       <section className="hero">
         <div className="container">
           <span className="badge glass">
-            <Icon name="shield" size={14} /> Verified trek organizers only
+            <Icon name="shield" size={14} /> Verified trip organizers only
           </span>
           <h1 style={{ marginTop: 16 }}>
-            Find a <em>trek</em>, book in minutes
+            Find a <em>trip</em>, book in minutes
           </h1>
           <p className="lead">
-            First trek or fiftieth — pick a date that suits you, see the price, pickup points and
+            First trip or fiftieth — pick a date that suits you, see the price, pickup points and
             what’s included, and reserve your seats.
           </p>
           <div className="hero-trust">
@@ -72,7 +72,7 @@ export default async function HomePage() {
               <Icon name="mountain" size={15} /> Challenging climbs
             </Link>
             <Link className="chip" href="/search">
-              <Icon name="grid" size={15} /> All treks
+              <Icon name="grid" size={15} /> All trips
             </Link>
           </div>
         </div>
@@ -82,15 +82,15 @@ export default async function HomePage() {
             <div className="section-head">
               <div>
                 <span className="eyebrow">Popular right now</span>
-                <h2>Treks people are booking</h2>
+                <h2>Trips departing soon</h2>
               </div>
               <Link href="/search" className="cluster small" style={{ gap: 4 }}>
-                See all treks <Icon name="arrowRight" size={16} />
+                See all trips <Icon name="arrowRight" size={16} />
               </Link>
             </div>
             {treks === null ? (
               <p className="notice warn">
-                We couldn&apos;t load treks right now. Please try again shortly.
+                We couldn&apos;t load trips right now. Please try again shortly.
               </p>
             ) : treks.items.length === 0 ? (
               <div className="empty-state">
@@ -99,7 +99,7 @@ export default async function HomePage() {
                 </span>
                 <strong>No departures this week or next</strong>
                 <span className="muted small">
-                  Organizers are adding new dates. <Link href="/search">See all treks</Link>
+                  Organizers are adding new dates. <Link href="/search">See all trips</Link>
                 </span>
               </div>
             ) : (
@@ -116,14 +116,14 @@ export default async function HomePage() {
 
           <section className="cta-band">
             <div className="stack" style={{ gap: 4 }}>
-              <h2 style={{ margin: 0, color: '#fff' }}>Run treks? List them on Ohviana.</h2>
+              <h2 style={{ margin: 0, color: '#fff' }}>Run trips? List them on Ohviana.</h2>
               <p>
-                Reach new trekkers, manage departures and attendees, and share your own booking
+                Reach new travellers, manage departures and attendees, and share your own booking
                 links — free.
               </p>
             </div>
             <Link href="/dashboard" className="btn sun">
-              List your treks <Icon name="arrowRight" size={16} />
+              List your trips <Icon name="arrowRight" size={16} />
             </Link>
           </section>
         </div>

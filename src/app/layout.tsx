@@ -16,9 +16,9 @@ const font = Plus_Jakarta_Sans({ subsets: ['latin'], display: 'swap', variable: 
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: 'Ohviana — Book trekking departures', template: '%s · Ohviana' },
+  title: { default: 'Ohviana — Book weekend trips', template: '%s · Ohviana' },
   description:
-    'Book treks in the Western Ghats and beyond with verified organizers. See dates, prices and pickup points, and reserve your seats in minutes.',
+    'Book treks and weekend trips in the Western Ghats and beyond with verified organizers. See dates, prices and pickup points, and reserve your seats in minutes.',
   openGraph: { siteName: 'Ohviana', type: 'website', locale: 'en_IN' },
 };
 
@@ -82,7 +82,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             </div>
             <div>
               <h4>For organizers</h4>
-              <Link href="/dashboard">List your treks</Link>
+              <Link href="/dashboard">List your trips</Link>
               {/* Signed out, /dashboard is the organizer pitch page. */}
               <Link href="/dashboard">Why Ohviana?</Link>
               <Link href="/login?next=/dashboard">Organizer sign in</Link>

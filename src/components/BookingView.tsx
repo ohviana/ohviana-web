@@ -28,7 +28,7 @@ export function BookingView({
         </div>
       )}
       <dl className="kv">
-        <dt>Trek</dt>
+        <dt>Trip</dt>
         <dd>
           {b.batch.trekTitle} <span className="muted">({b.batch.catalogTrekName})</span>
         </dd>

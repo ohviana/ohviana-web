@@ -20,7 +20,7 @@ const ACTIVE_ORG_KEY = 'ohviana:active-organizer';
 const NAV: (NavItem & { needs: OrgPermission })[] = [
   { href: '/dashboard', label: 'Overview', icon: 'grid', needs: 'org:read' },
   { href: '/dashboard/batches', label: 'Batches', icon: 'calendar', needs: 'batches:read' },
-  { href: '/dashboard/treks', label: 'Treks', icon: 'mountain', needs: 'org:read' },
+  { href: '/dashboard/treks', label: 'Trips', icon: 'mountain', needs: 'org:read' },
   { href: '/dashboard/reviews', label: 'Reviews', icon: 'star', needs: 'bookings:read' },
   { href: '/dashboard/team', label: 'Team', icon: 'users', needs: 'org:manage_members' },
   { href: '/dashboard/profile', label: 'Profile', icon: 'building', needs: 'org:read' },
@@ -133,11 +133,11 @@ function OrganizerLanding() {
       <section className="cta-band" style={{ padding: 36 }}>
         <div className="stack" style={{ gap: 10, maxWidth: 620 }}>
           <span className="badge glass" style={{ alignSelf: 'flex-start' }}>
-            For trek organizers
+            For trip organizers
           </span>
-          <h1 style={{ color: '#fff', margin: 0 }}>Grow your trek business with Ohviana</h1>
+          <h1 style={{ color: '#fff', margin: 0 }}>Grow your trip business with Ohviana</h1>
           <p>
-            List your treks, publish batches, and get bookings from new trekkers — plus your own
+            List your trips, publish batches, and get bookings from new travellers — plus your own
             commission-free booking links for WhatsApp and Instagram.
           </p>
           <div className="cluster" style={{ marginTop: 8 }}>
@@ -165,7 +165,7 @@ function OrganizerLanding() {
           {
             icon: 'download' as const,
             title: 'Attendee lists, ready',
-            text: 'Download who is coming, pickups and emergency contacts for your trek leaders.',
+            text: 'Download who is coming, pickups and emergency contacts for your trip leaders.',
           },
         ].map((f) => (
           <div key={f.title} className="card feature">

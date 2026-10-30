@@ -10,7 +10,7 @@ import { todayIst } from '@/lib/format';
 import { isoDay, one, searchText, type SearchParams } from '@/lib/params';
 
 export const metadata: Metadata = {
-  title: 'Explore treks',
+  title: 'Explore trips',
   // Result pages for arbitrary queries shouldn't be indexed; trek pages are the canonical ones.
   robots: { index: false, follow: true },
 };
@@ -26,7 +26,7 @@ function summarize(items: PublicBatch[], more: boolean) {
     `${count}${more ? '+' : ''} ${count === 1 && !more ? one : many}`;
   return {
     departures: n(items.length, 'departure'),
-    treks: n(new Set(items.map((b) => b.catalogTrek.id)).size, 'trek'),
+    treks: n(new Set(items.map((b) => b.catalogTrek.id)).size, 'trip'),
     organizers: n(new Set(items.map((b) => b.organizer.id)).size, 'verified organizer'),
   };
 }
@@ -45,7 +45,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
   const cursor = one(sp.cursor);
   const difficultyRaw = one(sp.difficulty);
   const difficulty = DIFFICULTIES.includes(difficultyRaw as never) ? difficultyRaw : undefined;
-  // "Other treks in <district>" from a trek page.
+  // "Other trips in <district>" from a trip page.
   const district = one(sp.district)?.trim().slice(0, 80) || undefined;
 
   const filtered = !!(query || from || to || difficulty || district);
@@ -98,10 +98,10 @@ export default async function SearchPage({ searchParams }: { searchParams: Searc
           {query
             ? `Results for “${query}”`
             : district
-              ? `Treks in ${district}`
+              ? `Trips in ${district}`
               : difficulty === 'easy'
-                ? 'Beginner-friendly treks'
-                : 'Explore treks'}
+                ? 'Beginner-friendly trips'
+                : 'Explore trips'}
         </h1>
         <div className="card">
           <SearchForm query={query} date={date} difficulty={difficulty} />

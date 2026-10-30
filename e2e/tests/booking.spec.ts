@@ -48,7 +48,7 @@ test('marketplace journey: search → departures by day → book → confirmatio
   page,
 }) => {
   await page.goto('/');
-  await page.getByLabel('Where do you want to trek?').fill('kudremuk'); // typo on purpose
+  await page.getByLabel('Where do you want to go?').fill('kudremuk'); // typo on purpose
   await page.getByRole('button', { name: 'Search' }).click();
   await page.waitForURL(/\/search\?query=kudremuk/);
 

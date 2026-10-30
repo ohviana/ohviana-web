@@ -106,7 +106,7 @@ function ProfileView({ profile: p }: { profile: OrganizerProfile }) {
           <strong className="small">About</strong>
           <p style={{ margin: 0, whiteSpace: 'pre-line' }} className={p.description ? '' : 'muted'}>
             {p.description ??
-              'Tell trekkers who you are, how long you’ve run treks and what makes your trips special.'}
+              'Tell travellers who you are, how long you’ve run trips and what makes them special.'}
           </p>
         </div>
         <span className="small muted">Shown on your public page and next to your departures.</span>
@@ -119,7 +119,7 @@ function ProfileView({ profile: p }: { profile: OrganizerProfile }) {
             <span className="small muted">Ohviana marketplace</span>
             <strong>{rate}%</strong>
             <span className="small muted">
-              per booking from trekkers who find you on Ohviana. On a {price(example)} booking you
+              per booking from travellers who find you on Ohviana. On a {price(example)} booking you
               pay {price(Math.round((example * p.commissionRateBps) / 10_000))}.
             </span>
           </div>
@@ -139,7 +139,7 @@ function ProfileView({ profile: p }: { profile: OrganizerProfile }) {
       <section className="card stack">
         <div className="stack" style={{ gap: 2 }}>
           <h2 style={{ margin: 0 }}>Private details</h2>
-          <span className="small muted">Shared with Ohviana only, never shown to trekkers.</span>
+          <span className="small muted">Shared with Ohviana only, never shown to travellers.</span>
         </div>
         <dl className="kv">
           <dt>Contact email</dt>

@@ -8,7 +8,7 @@ export default function Page() {
   return (
     <ComingSoon
       title="Organizer verification"
-      intro="How Ohviana checks trek organizers before they can list treks."
+      intro="How Ohviana checks trip organizers before they can list trips."
     />
   );
 }

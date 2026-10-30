@@ -70,7 +70,7 @@ export function ReviewCard({ review, orgName }: { review: PublicReview; orgName:
           <strong>{review.authorName}</strong>
           <span className="small muted">
             {' '}
-            · Trekked with them · {review.trekName} · {tripMonth(review.tripDate)}
+            · Travelled with them · {review.trekName} · {tripMonth(review.tripDate)}
           </span>
         </span>
         <Stars value={review.overall} />

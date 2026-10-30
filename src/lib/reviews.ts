@@ -5,7 +5,7 @@ export const ASPECTS: { key: ReviewAspect; label: string; hint: string }[] = [
   { key: 'stay', label: 'Stay', hint: 'Homestay, tent or camp' },
   { key: 'bus', label: 'Bus / travel', hint: 'Comfort and on-time pickup' },
   { key: 'food', label: 'Food', hint: 'Taste and quantity' },
-  { key: 'leader', label: 'Trek leader', hint: 'Guidance and support' },
+  { key: 'leader', label: 'Trip leader', hint: 'Guidance and support' },
   { key: 'safety', label: 'Safety & organisation', hint: 'Planning, first aid, group care' },
 ];
 

@@ -79,7 +79,7 @@ export default async function TrekPage({
       >
         <div className="container stack" style={{ gap: 10 }}>
           <nav className="small">
-            <Link href="/search">Treks</Link> <span className="muted">/ {trek.name}</span>
+            <Link href="/search">Trips</Link> <span className="muted">/ {trek.name}</span>
           </nav>
           <h1 style={{ margin: 0, color: '#fff' }}>{trek.name}</h1>
           {trek.summary && (
@@ -127,7 +127,7 @@ export default async function TrekPage({
         {/* Location, difficulty and altitude are in the banner; departures get the full width. */}
         {trek.description && (
           <section className="card stack">
-            <h2 style={{ margin: 0 }}>About this trek</h2>
+            <h2 style={{ margin: 0 }}>About this trip</h2>
             <p style={{ whiteSpace: 'pre-line', margin: 0 }}>{trek.description}</p>
           </section>
         )}
@@ -178,7 +178,7 @@ function OtherOptions({ trek, date }: { trek: PublicTrekDetail; date: string | u
       ? [
           {
             icon: 'pin' as const,
-            title: `Other treks in ${trek.district}`,
+            title: `Other trips in ${trek.district}`,
             text: 'Same area, different dates.',
             href: `/search${qs({ district: trek.district })}`,
           },
@@ -187,14 +187,14 @@ function OtherOptions({ trek, date }: { trek: PublicTrekDetail; date: string | u
     trek.difficulty === 'easy'
       ? {
           icon: 'grid' as const,
-          title: 'All treks',
-          text: 'Browse every trek with upcoming dates.',
+          title: 'All trips',
+          text: 'Browse every trip with upcoming dates.',
           href: '/search',
         }
       : {
           icon: 'sparkle' as const,
-          title: 'Beginner-friendly treks',
-          text: 'Easier trails, great for a first trek.',
+          title: 'Beginner-friendly trips',
+          text: 'Easier trails, great for a first trip.',
           href: '/search?difficulty=easy',
         },
     {

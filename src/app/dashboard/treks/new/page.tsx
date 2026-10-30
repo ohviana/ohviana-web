@@ -80,7 +80,7 @@ export default function NewTrekPage() {
   async function save(e: FormEvent) {
     e.preventDefault();
     const trekName = name.trim().replace(/\s+/g, ' ');
-    if (trekName.length < 2) return action.setError('Enter the trek name, e.g. Kodachadri.');
+    if (trekName.length < 2) return action.setError('Enter the trip name, e.g. Kodachadri.');
     const altitude = f.altitude.trim() ? Number(f.altitude) : null;
     if (altitude !== null && !(Number.isInteger(altitude) && altitude > 0 && altitude <= 9000)) {
       return action.setError('Enter the altitude in metres, e.g. 1343.');
@@ -124,7 +124,7 @@ export default function NewTrekPage() {
   }
 
   if (!can('treks:write')) {
-    return <Outcome error="Your role can't create treks." />;
+    return <Outcome error="Your role can't create trips." />;
   }
 
   const list = (k: 'inclusions' | 'exclusions', label: string, placeholder: string) => (
@@ -140,9 +140,9 @@ export default function NewTrekPage() {
     <form onSubmit={save} className="stack trek-form" style={{ gap: 20 }}>
       <div className="stack" style={{ gap: 6 }}>
         <span className="small">
-          <Link href="/dashboard/treks">← Treks</Link>
+          <Link href="/dashboard/treks">← Trips</Link>
         </span>
-        <h1 style={{ margin: 0 }}>Add a trek</h1>
+        <h1 style={{ margin: 0 }}>Add a trip</h1>
         <p className="muted" style={{ margin: 0 }}>
           Only the name is required. You&apos;ll add dates and pickup points on the next screen.
         </p>
@@ -151,7 +151,7 @@ export default function NewTrekPage() {
       <section className="card stack">
         <DestinationInput
           big
-          label="Trek name"
+          label="Trip name"
           placeholder="e.g. Kodachadri, Kudremukh"
           value={name}
           onChange={setName}
@@ -205,7 +205,7 @@ export default function NewTrekPage() {
             id="nt-summary"
             rows={3}
             maxLength={500}
-            placeholder="A short, high-level description: what makes this trek special, the terrain and the views."
+            placeholder="A short, high-level description: what makes this trip special, the terrain and the views."
             value={f.summary}
             onChange={set('summary')}
           />
@@ -259,7 +259,7 @@ export default function NewTrekPage() {
             onChange={set('cancellationPolicy')}
             placeholder="e.g. Full refund up to 7 days before departure, 50% up to 3 days before, no refund after that."
           />
-          <span className="hint">Shown to trekkers and saved with every booking.</span>
+          <span className="hint">Shown to travellers and saved with every booking.</span>
         </div>
       </section>
 
@@ -313,13 +313,13 @@ export default function NewTrekPage() {
         {progress && <span className="small muted">{progress}</span>}
         {!approved && (
           <span className="small muted">
-            Your organization is awaiting approval. Your trek is saved; trekkers can book it once
+            Your organization is awaiting approval. Your trip is saved; travellers can book it once
             you&apos;re approved.
           </span>
         )}
         <div className="cluster">
           <button type="submit" disabled={action.pending}>
-            Save trek <Icon name="arrowRight" size={16} />
+            Save trip <Icon name="arrowRight" size={16} />
           </button>
           <Link href="/dashboard/treks" className="btn secondary">
             Cancel

@@ -16,31 +16,31 @@ export default function TreksPage() {
       <div className="page-head">
         <div>
           <span className="eyebrow">Your offerings</span>
-          <h1>Treks</h1>
+          <h1>Trips</h1>
         </div>
         {can('treks:write') && (
           <Link href="/dashboard/treks/new" className="btn">
-            <Icon name="sparkle" size={16} /> New trek
+            <Icon name="sparkle" size={16} /> New trip
           </Link>
         )}
       </div>
       <p className="muted" style={{ margin: 0 }}>
-        A trek holds what stays the same — itinerary, inclusions, pickups and policy. Each trip on
-        it is a batch with its own dates, seats and attendee list.
+        A trip holds what stays the same — itinerary, inclusions, pickups and policy. Each departure
+        of it is a batch with its own dates, seats and attendee list.
       </p>
 
       <Outcome error={treks.error} />
       {treks.loading && !treks.data && <Loading />}
       {treks.data && treks.data.items.length === 0 && (
-        <EmptyState icon="mountain" title="No treks yet">
+        <EmptyState icon="mountain" title="No trips yet">
           <span className="muted small">
             {can('treks:write') ? (
               <>
-                <Link href="/dashboard/treks/new">Add your first trek</Link> — one form, takes a
+                <Link href="/dashboard/treks/new">Add your first trip</Link> — one form, takes a
                 couple of minutes.
               </>
             ) : (
-              'Your team has not added any treks yet.'
+              'Your team has not added any trips yet.'
             )}
           </span>
         </EmptyState>

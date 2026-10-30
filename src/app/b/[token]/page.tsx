@@ -8,7 +8,7 @@ import { ApiError, apiFetch } from '@/lib/api';
 type Params = Promise<{ token: string }>;
 
 export const metadata: Metadata = {
-  title: 'Book your trek',
+  title: 'Book your trip',
   robots: { index: false, follow: false },
 };
 
@@ -37,7 +37,7 @@ export default async function DirectLinkPage({ params }: { params: Params }) {
           The organizer may have closed this link or the departure is no longer available.
         </p>
         <Link href="/search" className="btn">
-          Browse treks
+          Browse trips
         </Link>
       </div>
     );

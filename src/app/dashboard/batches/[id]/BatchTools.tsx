@@ -512,7 +512,7 @@ export function RepeatBatch({ batch, onClose }: { batch: OrganizerBatch; onClose
         <Icon name="calendar" /> Run this batch again
       </h2>
       <p className="small muted" style={{ margin: 0 }}>
-        Same trek, price, seats and pickup points on new dates. It gets its own name and an empty
+        Same trip, price, seats and pickup points on new dates. It gets its own name and an empty
         attendee list.
       </p>
       <div className="form-grid">

@@ -8,7 +8,7 @@ export default function Page() {
   return (
     <ComingSoon
       title="Organizer terms"
-      intro="The terms for trek organizers listing and selling treks on Ohviana."
+      intro="The terms for trip organizers listing and selling trips on Ohviana."
     />
   );
 }

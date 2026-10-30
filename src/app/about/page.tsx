@@ -8,7 +8,7 @@ export default function Page() {
   return (
     <ComingSoon
       title="About Ohviana"
-      intro="Ohviana helps you discover treks and book them with verified local organizers."
+      intro="Ohviana helps you discover weekend trips and book them with verified local organizers."
     />
   );
 }

@@ -83,7 +83,7 @@ function BatchesInner() {
         </div>
         {can('batches:write') && (
           <Link href="/dashboard/treks" className="btn secondary">
-            <Icon name="calendar" size={16} /> New batch from a trek
+            <Icon name="calendar" size={16} /> New batch from a trip
           </Link>
         )}
       </div>
@@ -118,7 +118,7 @@ function BatchesInner() {
       ) : rows.length === 0 ? (
         <EmptyState icon="calendar" title="No batches here">
           <span className="muted small">
-            Open a trek and use <strong>Add batches</strong>, or open a past batch and use{' '}
+            Open a trip and use <strong>Add batches</strong>, or open a past batch and use{' '}
             <strong>Run this batch again</strong>.
           </span>
         </EmptyState>
@@ -128,7 +128,7 @@ function BatchesInner() {
             <thead>
               <tr>
                 <th>Batch</th>
-                <th>Trek</th>
+                <th>Trip</th>
                 <th>Price</th>
                 <th>Seats</th>
                 <th>Status</th>

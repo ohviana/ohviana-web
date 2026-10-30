@@ -49,7 +49,7 @@ function TrekDetail() {
     <>
       <div className="stack" style={{ gap: 6 }}>
         <span className="small">
-          <Link href="/dashboard/treks">← Treks</Link>
+          <Link href="/dashboard/treks">← Trips</Link>
         </span>
         <div className="spread">
           <span className="cluster" style={{ gap: 10 }}>
@@ -63,14 +63,14 @@ function TrekDetail() {
               </button>
             ) : (
               <button type="button" className="secondary" onClick={() => setEditing(true)}>
-                <Icon name="pencil" size={16} /> Edit trek
+                <Icon name="pencil" size={16} /> Edit trip
               </button>
             ))}
         </div>
       </div>
       {created && !editing && (
         <p className="notice ok small" style={{ margin: 0 }}>
-          Trek saved. Add its dates below so trekkers can book.
+          Trip saved. Add its dates below so travellers can book.
           {org.status !== 'approved' && ' Bookings open once your organization is approved.'}
         </p>
       )}
@@ -225,7 +225,7 @@ function TrekDates({ trek, canAdd }: { trek: OrganizerTrek; canAdd: boolean }) {
         <Loading />
       ) : upcoming.length === 0 ? (
         <p className="muted small" style={{ margin: 0 }}>
-          No upcoming dates.{canAdd && !adding && ' Add dates so trekkers can book.'}
+          No upcoming dates.{canAdd && !adding && ' Add dates so travellers can book.'}
         </p>
       ) : (
         <ul className="date-rows">
@@ -423,7 +423,7 @@ function TrekForm({
             className="secondary"
             disabled={action.pending}
             onClick={() =>
-              confirm('Archive this trek? It will no longer appear on Ohviana.') && save('archived')
+              confirm('Archive this trip? It will no longer appear on Ohviana.') && save('archived')
             }
           >
             Archive
@@ -602,7 +602,7 @@ function AddBatches({
     for (const l of leads.filter((x) => x.name.trim() || x.phone.trim())) {
       const phone = toE164(l.phone);
       if (!l.name.trim() || !phone) {
-        return action.setError('Give each trek lead a name and a valid mobile number.');
+        return action.setError('Give each trip lead a name and a valid mobile number.');
       }
       leadBody.push({ name: l.name.trim(), phone });
     }
@@ -638,7 +638,7 @@ function AddBatches({
         return created;
       },
       publish
-        ? `Published ${n}. Trekkers can book now.`
+        ? `Published ${n}. Travellers can book now.`
         : `Saved ${n} as draft. Publish from Batches when ready.`,
     );
   }
@@ -785,18 +785,18 @@ function AddBatches({
       </div>
 
       <div className="stack" style={{ gap: 8 }}>
-        <strong className="small">Trek leads</strong>
+        <strong className="small">Trip leads</strong>
         {leads.map((l, i) => (
           <div key={l.key} className="row-inputs">
             <input
-              aria-label={`Trek lead ${i + 1} name`}
+              aria-label={`Trip lead ${i + 1} name`}
               maxLength={80}
               placeholder="Name"
               value={l.name}
               onChange={(e) => setLead(l.key, 'name', e.target.value)}
             />
             <input
-              aria-label={`Trek lead ${i + 1} mobile`}
+              aria-label={`Trip lead ${i + 1} mobile`}
               type="tel"
               inputMode="tel"
               placeholder="Mobile, e.g. 98450 12345"
@@ -806,7 +806,7 @@ function AddBatches({
             <button
               type="button"
               className="small secondary"
-              aria-label={`Remove trek lead ${i + 1}`}
+              aria-label={`Remove trip lead ${i + 1}`}
               onClick={() => setLeads(leads.filter((x) => x.key !== l.key))}
             >
               <Icon name="x" size={16} />
@@ -820,7 +820,7 @@ function AddBatches({
             style={{ alignSelf: 'flex-start' }}
             onClick={() => setLeads([...leads, { key: rowKey++, name: '', phone: '' }])}
           >
-            + Add trek lead
+            + Add trip lead
           </button>
         )}
       </div>

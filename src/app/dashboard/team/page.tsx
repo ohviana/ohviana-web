@@ -88,7 +88,7 @@ export default function TeamPage() {
       <div className="stack" style={{ gap: 4 }}>
         <h1 style={{ margin: 0 }}>Team</h1>
         <p className="muted" style={{ margin: 0 }}>
-          Owners run your organization. Trek leads see only the batches they lead.
+          Owners run your organization. Trip leads see only the batches they lead.
         </p>
       </div>
       <Outcome error={action.error ?? team.error ?? leads.error} message={action.message} />
@@ -165,9 +165,9 @@ export default function TeamPage() {
 
       <section className="card stack">
         <div className="stack" style={{ gap: 2 }}>
-          <h2 style={{ margin: 0 }}>Trek leads</h2>
+          <h2 style={{ margin: 0 }}>Trip leads</h2>
           <span className="small muted">
-            Name trek leads with their mobile when you add dates. Once they sign in to Ohviana with
+            Name trip leads with their mobile when you add dates. Once they sign in to Ohviana with
             that number, they can see the batches they lead: details and attendee list, nothing
             else.
           </span>
@@ -176,7 +176,7 @@ export default function TeamPage() {
           <Loading />
         ) : !leads.data?.items.length ? (
           <p className="muted small" style={{ margin: 0 }}>
-            No trek leads yet.
+            No trip leads yet.
           </p>
         ) : (
           <ul className="people">

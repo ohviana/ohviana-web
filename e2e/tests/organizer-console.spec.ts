@@ -85,7 +85,7 @@ test('organizer + admin walkthrough, end to end', async ({ page }) => {
 
   // 1. A new organizer creates an account and registers their organization.
   await signUp(page, ORG_EMAIL, 'Ravi Organizer');
-  await expect(page.getByRole('heading', { name: 'List your treks on Ohviana' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'List your trips on Ohviana' })).toBeVisible();
   await page.getByLabel('Organization name').fill(ORG_NAME);
   await page.getByLabel('City').fill('Bengaluru');
   await page.getByLabel('Email', { exact: true }).fill(ORG_EMAIL);
@@ -106,10 +106,10 @@ test('organizer + admin walkthrough, end to end', async ({ page }) => {
   await signIn(page, ORG_EMAIL);
   await expect(page.getByText('Awaiting approval from Ohviana')).toHaveCount(0);
   await page.goto('/dashboard/treks');
-  await page.getByRole('link', { name: 'New trek' }).click();
+  await page.getByRole('link', { name: 'New trip' }).click();
   await page.waitForURL(/\/dashboard\/treks\/new$/);
   // The trek name is the destination: the seed's Kudremukh is reused.
-  await page.getByLabel('Trek name').fill('Kudremukh');
+  await page.getByLabel('Trip name').fill('Kudremukh');
   await page.getByLabel('Duration').selectOption('2');
   await page.getByLabel('Difficulty').selectOption('moderate');
   await page.getByLabel('Start point').fill('Bengaluru');
@@ -122,9 +122,9 @@ test('organizer + admin walkthrough, end to end', async ({ page }) => {
   await page
     .locator('#nt-photos')
     .setInputFiles({ name: 'bus.jpg', mimeType: 'image/jpeg', buffer: image });
-  await page.getByRole('button', { name: 'Save trek' }).click();
+  await page.getByRole('button', { name: 'Save trip' }).click();
   await page.waitForURL(/\/dashboard\/treks\/[0-9a-f-]+\?created=1/);
-  await expect(page.getByText('Trek saved. Add its dates below')).toBeVisible();
+  await expect(page.getByText('Trip saved. Add its dates below')).toBeVisible();
   // View mode shows photos in the carousel (thumbnail slots appear only in Edit trek).
   await expect(page.locator('.photo-track img')).toHaveCount(1);
 
@@ -136,10 +136,10 @@ test('organizer + admin walkthrough, end to end', async ({ page }) => {
   await page.getByLabel('Seats', { exact: true }).fill('12');
   await page.getByLabel('Pickup 1 name').fill('Majestic Bus Stand');
   await page.getByLabel('Pickup 1 time').fill(istLocal(10, '21:00'));
-  await page.getByLabel('Trek lead 1 name').fill('Ravi Kumar');
-  await page.getByLabel('Trek lead 1 mobile').fill('98450 12345');
+  await page.getByLabel('Trip lead 1 name').fill('Ravi Kumar');
+  await page.getByLabel('Trip lead 1 mobile').fill('98450 12345');
   await page.getByRole('button', { name: 'Publish', exact: true }).click();
-  await expect(page.getByText('Published 1 date. Trekkers can book now.')).toBeVisible();
+  await expect(page.getByText('Published 1 date. Travellers can book now.')).toBeVisible();
 
   // 4. The batch got a generated name; run it again a week later (published straight away).
   // Batch names capitalise each word of the organizer name, so the tag too.

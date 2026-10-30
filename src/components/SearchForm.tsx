@@ -15,7 +15,7 @@ export function SearchForm({ query, date, difficulty }: Props) {
     <form action="/search" method="get" className="search-grid" role="search">
       {difficulty && <input type="hidden" name="difficulty" value={difficulty} />}
       <div className="field">
-        <label htmlFor="q">Where do you want to trek?</label>
+        <label htmlFor="q">Where do you want to go?</label>
         <div className="input-icon">
           <Icon name="search" />
           <input

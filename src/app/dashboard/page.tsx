@@ -34,7 +34,7 @@ export default function OverviewPage() {
         {can('treks:write') && (
           <div className="cluster">
             <Link href="/dashboard/treks/new" className="btn secondary">
-              <Icon name="mountain" size={16} /> Add a trek
+              <Icon name="mountain" size={16} /> Add a trip
             </Link>
             <Link href="/dashboard/batches" className="btn">
               <Icon name="calendar" size={16} /> Manage batches
@@ -51,7 +51,7 @@ export default function OverviewPage() {
           <div className="stack" style={{ gap: 2 }}>
             <strong>Awaiting approval from Ohviana</strong>
             <span className="small">
-              Set up your treks and draft batches now — you can publish them and share booking links
+              Set up your trips and draft batches now — you can publish them and share booking links
               as soon as you&apos;re approved.
             </span>
           </div>
@@ -114,7 +114,7 @@ function BookingChannels({ b }: { b: DashboardSummary['bookings'] }) {
       key: 'marketplace',
       icon: 'trendingUp',
       label: 'Ohviana marketplace',
-      hint: 'Trekkers who found you on Ohviana',
+      hint: 'Travellers who found you on Ohviana',
       t: marketplace,
     },
     {

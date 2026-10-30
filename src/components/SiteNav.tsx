@@ -43,7 +43,7 @@ export function SiteNav() {
   return (
     <nav className="nav" aria-label="Main">
       <Link href="/search">
-        Explore<span className="nav-long"> treks</span>
+        Explore<span className="nav-long"> trips</span>
       </Link>
       {/* Signed out, it offers phone sign-in; signed in, it is the customer's account. */}
       <Link href="/my-bookings">My bookings</Link>

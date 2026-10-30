@@ -18,7 +18,7 @@ export default function ContactPage() {
       <header className="stack" style={{ gap: 8 }}>
         <h1 style={{ margin: 0 }}>Contact us</h1>
         <p className="lead" style={{ margin: 0 }}>
-          Questions about a booking, a trek or listing your treks? We&apos;re happy to help.
+          Questions about a booking, a trip or listing your trips? We&apos;re happy to help.
         </p>
       </header>
       <div className="contact-list">
