@@ -9,8 +9,8 @@ import { Outcome } from '@/components/dash/ui';
 import { mediaUrl } from '@/lib/media';
 import { authHeader } from '@/lib/session';
 import { shrinkForUpload } from '@/lib/upload-image';
+import { API_BASE_URL } from '@/lib/env';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
 /** Photos per trek, the same as on the add-trek form. The first is the cover. */
 export const MAX_PHOTOS = 3;
 export const MAX_BYTES = 10 * 1024 * 1024;

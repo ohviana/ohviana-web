@@ -8,8 +8,7 @@ import { SiteNav } from '@/components/SiteNav';
 import { THEME_SCRIPT } from '@/components/ThemeToggle';
 import { SOCIAL_LINKS } from '@/lib/social';
 import './globals.css';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+import { SITE_URL } from '@/lib/env';
 
 // Self-hosted at build time by Next (no request to Google from visitors' browsers).
 const font = Plus_Jakarta_Sans({ subsets: ['latin'], display: 'swap', variable: '--font-sans' });

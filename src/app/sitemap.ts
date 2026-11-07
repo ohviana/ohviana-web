@@ -2,8 +2,7 @@ import type { MetadataRoute } from 'next';
 import { connection } from 'next/server';
 import { PublicSitemap } from '@ohviana/contracts';
 import { apiFetch } from '@/lib/api';
-
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
+import { SITE_URL } from '@/lib/env';
 
 /** The API's list is cached for an hour; a crawler never waits on more than one slow call. */
 const REVALIDATE_S = 3600;

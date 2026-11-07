@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next';
-
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
+import { SITE_URL } from '@/lib/env';
 
 /**
  * Index canonical trek and organizer pages; keep checkout, personal pages and the consoles out
