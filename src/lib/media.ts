@@ -1,6 +1,5 @@
 import type { PhotoCategory } from '@ohviana/shared';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
+import { API_BASE_URL } from './env';
 
 /** Photo URLs come from the API as paths; images are served by the API. */
 export function mediaUrl(path: string): string {

@@ -1,8 +1,7 @@
 import { notFound } from 'next/navigation';
 import { ErrorResponse } from '@ohviana/contracts';
 import type { z } from 'zod';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
+import { API_BASE_URL } from './env';
 
 export class ApiError extends Error {
   constructor(

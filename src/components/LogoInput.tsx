@@ -6,8 +6,8 @@ import { logoSrc } from '@/lib/media';
 import { authHeader } from '@/lib/session';
 import { shrinkForUpload } from '@/lib/upload-image';
 import { Icon } from './Icon';
+import { API_BASE_URL } from '@/lib/env';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
 const MAX_BYTES = 10 * 1024 * 1024;
 
 export interface LogoChoice {

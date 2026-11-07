@@ -3,6 +3,7 @@
 import type { z } from 'zod';
 import { ApiError, apiFetch } from './api';
 import { authHeader } from './session';
+import { API_BASE_URL } from './env';
 
 export interface AuthedOptions {
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
@@ -35,8 +36,7 @@ export async function authedFetch<T extends z.ZodType>(
 
 /** Authenticated file download (e.g. attendee CSV): fetches with headers, saves as a file. */
 export async function authedDownload(path: string, organizerId: string): Promise<void> {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
-  const res = await fetch(`${base}${path}`, {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
     headers: { ...(await authHeader()), 'x-organizer-id': organizerId },
     cache: 'no-store',
   });
