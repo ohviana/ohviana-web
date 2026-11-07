@@ -1,63 +1,69 @@
 /* =========================================================================
    Ohviana design system
-   Forest green brand + sunrise amber accent. Light and dark themes.
+   Modern classic: warm paper neutrals, deep forest green, sunrise amber.
+   Serif display (Fraunces) for headings and trek names; Plus Jakarta Sans for everything else.
    ========================================================================= */
 
 :root {
-  --bg: #f5f7f4;
+  --bg: #f7f6f2;
   --surface: #ffffff;
-  --surface-2: #eef3ee;
-  --surface-3: #e3ebe4;
-  --fg: #13201a;
-  --muted: #5b6a62;
-  --border: #dce5dd;
-  --accent: #0e7a4b;
-  --accent-strong: #0a5e39;
+  --surface-2: #f2f0ea;
+  --surface-3: #e9e6de;
+  --fg: #1b1f1c;
+  --muted: #5f655f;
+  --border: #e5e2d9;
+  --accent: #1d6b45;
+  --accent-strong: #15553a;
   --accent-fg: #ffffff;
-  --accent-soft: #e0f3e8;
-  --sun: #f59e0b;
-  --sun-soft: #fff3d6;
+  --accent-soft: #e7f1eb;
+  --sun: #e8a33d;
+  --sun-soft: #fbf1de;
   --sun-fg: #8a5300;
   --warn: #9a5b00;
-  --warn-soft: #fdf1d8;
-  --danger: #c0281c;
-  --danger-soft: #fdecea;
-  --hero-1: #073d27;
-  --hero-2: #0e7a4b;
-  --hero-3: #23a46c;
-  --radius: 16px;
+  --warn-soft: #fbf1de;
+  --danger: #b42318;
+  --danger-soft: #fdeeec;
+  --hero-1: #0f2a1d;
+  --hero-2: #1d5b3c;
+  --hero-3: #2f7a52;
+  --radius-lg: 20px;
+  --radius: 14px;
   --radius-sm: 10px;
-  --shadow-sm: 0 1px 2px rgb(16 40 28 / 0.06);
-  --shadow: 0 1px 2px rgb(16 40 28 / 0.05), 0 8px 24px rgb(16 40 28 / 0.07);
-  --shadow-lg: 0 18px 50px rgb(7 61 39 / 0.18);
+  --shadow-sm: 0 1px 2px rgb(27 31 28 / 0.04);
+  --shadow: 0 1px 2px rgb(27 31 28 / 0.04), 0 4px 14px rgb(27 31 28 / 0.05);
+  --shadow-lg: 0 14px 40px rgb(27 31 28 / 0.12);
   --font: var(--font-sans, system-ui), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: var(--font-serif, Georgia), Georgia, 'Times New Roman', serif;
+  /* Built-in easings are too weak; ease-out for enter/press, ease-in-out for on-screen movement. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   color-scheme: light;
 }
 
 /* Dark: follows the device unless the visitor picked a theme (data-theme, see ThemeToggle). */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #0a110e;
-    --surface: #111b16;
-    --surface-2: #16221c;
-    --surface-3: #1c2b23;
-    --fg: #e8f0ea;
-    --muted: #95a69c;
-    --border: #233229;
-    --accent: #34d399;
-    --accent-strong: #6ee7b7;
-    --accent-fg: #052014;
-    --accent-soft: #0f2c20;
-    --sun: #fbbf24;
-    --sun-soft: #2c230d;
-    --sun-fg: #fcd34d;
-    --warn: #fbbf24;
-    --warn-soft: #2c230d;
-    --danger: #f87171;
-    --danger-soft: #331614;
-    --hero-1: #04170f;
-    --hero-2: #0a3d27;
-    --hero-3: #0f6a43;
+    --bg: #0f1210;
+    --surface: #161a17;
+    --surface-2: #1c211d;
+    --surface-3: #242a25;
+    --fg: #eceeea;
+    --muted: #9ba39c;
+    --border: #272d28;
+    --accent: #6cc495;
+    --accent-strong: #8fd6ae;
+    --accent-fg: #0b1f14;
+    --accent-soft: #17291f;
+    --sun: #f0b45a;
+    --sun-soft: #2b2213;
+    --sun-fg: #f5c97a;
+    --warn: #f0b45a;
+    --warn-soft: #2b2213;
+    --danger: #f2837a;
+    --danger-soft: #2e1715;
+    --hero-1: #08130d;
+    --hero-2: #133a27;
+    --hero-3: #1d5b3c;
     --shadow-sm: none;
     --shadow: 0 1px 0 rgb(255 255 255 / 0.03);
     --shadow-lg: 0 18px 50px rgb(0 0 0 / 0.45);
@@ -66,27 +72,27 @@
 }
 
 :root[data-theme='dark'] {
-  --bg: #0a110e;
-  --surface: #111b16;
-  --surface-2: #16221c;
-  --surface-3: #1c2b23;
-  --fg: #e8f0ea;
-  --muted: #95a69c;
-  --border: #233229;
-  --accent: #34d399;
-  --accent-strong: #6ee7b7;
-  --accent-fg: #052014;
-  --accent-soft: #0f2c20;
-  --sun: #fbbf24;
-  --sun-soft: #2c230d;
-  --sun-fg: #fcd34d;
-  --warn: #fbbf24;
-  --warn-soft: #2c230d;
-  --danger: #f87171;
-  --danger-soft: #331614;
-  --hero-1: #04170f;
-  --hero-2: #0a3d27;
-  --hero-3: #0f6a43;
+  --bg: #0f1210;
+  --surface: #161a17;
+  --surface-2: #1c211d;
+  --surface-3: #242a25;
+  --fg: #eceeea;
+  --muted: #9ba39c;
+  --border: #272d28;
+  --accent: #6cc495;
+  --accent-strong: #8fd6ae;
+  --accent-fg: #0b1f14;
+  --accent-soft: #17291f;
+  --sun: #f0b45a;
+  --sun-soft: #2b2213;
+  --sun-fg: #f5c97a;
+  --warn: #f0b45a;
+  --warn-soft: #2b2213;
+  --danger: #f2837a;
+  --danger-soft: #2e1715;
+  --hero-1: #08130d;
+  --hero-2: #133a27;
+  --hero-3: #1d5b3c;
   --shadow-sm: none;
   --shadow: 0 1px 0 rgb(255 255 255 / 0.03);
   --shadow-lg: 0 18px 50px rgb(0 0 0 / 0.45);
@@ -101,6 +107,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* The grey tap flash fights our own :active feedback on phones. */
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -129,22 +137,34 @@ h2,
 h3 {
   line-height: 1.15;
   margin: 0 0 0.5em;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* Page and section titles in the display serif; h3 and below stay in the UI sans. */
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-optical-sizing: auto;
 }
 
 h1 {
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  font-weight: 800;
+  font-size: clamp(1.85rem, 5vw, 2.75rem);
+  letter-spacing: -0.02em;
 }
 
 h2 {
-  font-size: 1.3rem;
-  font-weight: 750;
+  font-size: clamp(1.3rem, 3.2vw, 1.55rem);
 }
 
 h3 {
   font-size: 1.05rem;
   font-weight: 700;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 p {
@@ -162,7 +182,13 @@ code {
   width: 100%;
   max-width: 1160px;
   margin: 0 auto;
-  padding: 32px 16px 64px;
+  padding: 24px 16px 56px;
+}
+
+@media (min-width: 760px) {
+  .container {
+    padding: 40px 24px 80px;
+  }
 }
 
 .narrow {
@@ -209,9 +235,9 @@ code {
 }
 
 .eyebrow {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -250,9 +276,10 @@ code {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-weight: 800;
-  font-size: 1.3rem;
-  letter-spacing: -0.03em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
   color: var(--fg);
   text-decoration: none;
 }
@@ -314,10 +341,12 @@ code {
   color: var(--fg);
 }
 
-.theme-toggle:hover {
-  background: var(--surface-2);
-  border-color: var(--border);
-  box-shadow: none;
+@media (hover: hover) and (pointer: fine) {
+  .theme-toggle:hover {
+    background: var(--surface-2);
+    border-color: var(--border);
+    box-shadow: none;
+  }
 }
 
 .nav button.nav-signout {
@@ -443,15 +472,15 @@ input,
 select,
 textarea {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  border: 1.5px solid var(--border);
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--fg) 14%, var(--border));
   background: var(--surface);
   color: var(--fg);
-  min-height: 46px;
+  min-height: 48px;
   transition:
-    border-color 0.15s,
-    box-shadow 0.15s;
+    border-color 150ms ease,
+    box-shadow 150ms ease;
 }
 
 input:hover,
@@ -465,7 +494,11 @@ select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+::placeholder {
+  color: color-mix(in srgb, var(--muted) 75%, transparent);
 }
 
 button:focus-visible,
@@ -487,51 +520,62 @@ button,
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 46px;
-  padding: 10px 20px;
-  border-radius: var(--radius-sm);
-  border: 1.5px solid var(--accent);
+  min-height: 48px;
+  padding: 10px 22px;
+  border-radius: 12px;
+  border: 1px solid var(--accent);
   background: var(--accent);
   color: var(--accent-fg);
-  font-weight: 700;
+  font-weight: 650;
+  letter-spacing: 0.005em;
   text-decoration: none;
   cursor: pointer;
+  /* Controls, not content: no double-tap-zoom delay, no long-press text selection. */
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
   transition:
-    background 0.15s,
-    transform 0.05s,
-    box-shadow 0.15s;
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 160ms var(--ease-out);
 }
 
-button:hover,
-.btn:hover {
-  background: var(--accent-strong);
-  border-color: var(--accent-strong);
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 25%, transparent);
+/* Hover only where a real pointer exists, so a tapped button doesn't stay "hovered" on phones. */
+@media (hover: hover) and (pointer: fine) {
+  button:hover,
+  .btn:hover {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+  }
 }
 
 button:active,
 .btn:active {
-  transform: translateY(1px);
+  transform: scale(0.97);
 }
 
 button:disabled {
   opacity: 0.55;
   cursor: default;
   box-shadow: none;
+  transform: none;
 }
 
 button.secondary,
 .btn.secondary {
   background: var(--surface);
   color: var(--fg);
-  border-color: var(--border);
+  border-color: color-mix(in srgb, var(--fg) 16%, var(--border));
 }
 
-button.secondary:hover,
-.btn.secondary:hover {
-  background: var(--surface-2);
-  border-color: var(--border);
-  box-shadow: none;
+@media (hover: hover) and (pointer: fine) {
+  button.secondary:hover,
+  .btn.secondary:hover {
+    background: var(--surface-2);
+    border-color: var(--border);
+    box-shadow: none;
+  }
 }
 
 /* A button that reads as an inline link (e.g. "Change" next to a phone number). */
@@ -548,6 +592,11 @@ button.link {
   text-underline-offset: 3px;
 }
 
+/* Inline text shouldn't jump when pressed. */
+button.link:active {
+  transform: none;
+}
+
 button.link:hover {
   background: none;
   box-shadow: none;
@@ -560,9 +609,11 @@ button.danger {
   border-color: color-mix(in srgb, var(--danger) 50%, transparent);
 }
 
-button.danger:hover {
-  background: var(--danger-soft);
-  box-shadow: none;
+@media (hover: hover) and (pointer: fine) {
+  button.danger:hover {
+    background: var(--danger-soft);
+    box-shadow: none;
+  }
 }
 
 .btn.sun {
@@ -612,7 +663,7 @@ legend {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 18px;
+  padding: var(--card-pad, 20px);
   box-shadow: var(--shadow);
 }
 
@@ -620,16 +671,24 @@ a.card {
   color: inherit;
   text-decoration: none;
   display: block;
+  -webkit-touch-callout: none;
   transition:
-    border-color 0.15s,
-    transform 0.15s,
-    box-shadow 0.15s;
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms var(--ease-out);
 }
 
-a.card:hover {
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+@media (hover: hover) and (pointer: fine) {
+  a.card:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+/* Press feedback for touch too; subtler than a button because cards are large. */
+a.card:active {
+  transform: scale(0.99);
 }
 
 .grid-cards {
@@ -673,7 +732,7 @@ a.card:hover {
 
 .section-head h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: clamp(1.45rem, 4vw, 1.85rem);
 }
 
 /* ---------- Hero ---------- */
@@ -720,7 +779,8 @@ a.card:hover {
 }
 
 .hero h1 {
-  font-size: clamp(2.1rem, 5.4vw, 3.6rem);
+  font-size: clamp(2.3rem, 7vw, 3.9rem);
+  line-height: 1.05;
   max-width: 760px;
   margin-bottom: 12px;
 }
@@ -752,7 +812,7 @@ a.card:hover {
   background: var(--surface);
   color: var(--fg);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   padding: 18px;
   box-shadow: var(--shadow-lg);
 }
@@ -806,19 +866,27 @@ a.card:hover {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
+  flex: none;
+  min-height: 36px;
+  padding: 6px 14px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: var(--surface-2);
+  background: var(--surface);
   color: var(--fg);
   text-decoration: none;
   font-size: 0.86rem;
   font-weight: 600;
 }
 
-.chip:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.chip:active {
+  transform: scale(0.97);
 }
 
 /* ---------- Trek cards ---------- */
@@ -860,7 +928,20 @@ a.card:hover {
 
 .trek-card-body h3 {
   margin: 0;
-  font-size: 1.15rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Summaries run up to 300 characters; three lines keeps cards in a row the same height. */
+.trek-summary {
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
 }
 
 .trek-meta {
@@ -902,6 +983,11 @@ a.card:hover {
   text-transform: capitalize;
 }
 
+/* Capitalize suits raw enum values ("pending"); written copy keeps its case ("Only 3 left"). */
+.badge.sentence {
+  text-transform: none;
+}
+
 .badge.ok {
   background: var(--accent-soft);
   color: var(--accent);
@@ -918,16 +1004,18 @@ a.card:hover {
 }
 
 .badge.glass {
-  background: rgb(255 255 255 / 0.18);
+  /* Dark glass stays legible on light photos too (white glass vanished on mist and sky). */
+  background: rgb(10 16 12 / 0.48);
   color: #fff;
   backdrop-filter: blur(4px);
 }
 
 .price {
-  font-weight: 800;
+  font-weight: 750;
   font-size: 1.35rem;
   white-space: nowrap;
   letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 .price small {
@@ -940,7 +1028,9 @@ a.card:hover {
 /* ---------- Departures grouped by day (Explore, trek pages) ---------- */
 .day-title {
   margin: 0;
-  font-size: 1.15rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
 }
 
 .day-group {
@@ -1040,16 +1130,18 @@ a.card:hover {
 /* Trek name first, then the organizer: the two things people compare. */
 .departure-trek {
   color: var(--fg);
-  font-size: 1.3rem;
-  line-height: 1.25;
-  font-weight: 750;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.2;
+  font-weight: 600;
   text-decoration: none;
 }
 
 .departure-org {
   font-size: 0.95rem;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
+  max-width: 100%;
   gap: 6px;
   color: var(--accent);
   font-weight: 650;
@@ -1059,6 +1151,33 @@ a.card:hover {
 .departure-trek:hover,
 .departure-org:hover {
   text-decoration: underline;
+}
+
+/* Long or unbreakable organizer names wrap; the logo and shield stay put at the first line. */
+.departure-org-name {
+  min-width: 0;
+  /* Room for the logo beside it; the shield and rating then wrap below a long name instead of
+     squeezing it into a narrow column. */
+  max-width: calc(100% - 28px);
+  overflow-wrap: anywhere;
+}
+
+.departure-org {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+.departure-org .rating-badge {
+  flex-shrink: 0;
+}
+
+.departure-org .org-mark {
+  margin-top: 1px;
+}
+
+.departure-org .verified {
+  flex-shrink: 0;
+  margin-top: 0.25em;
 }
 
 .departure-foot {
@@ -1345,7 +1464,7 @@ ul.plain {
 }
 
 .cta-band {
-  border-radius: 22px;
+  border-radius: var(--radius-lg);
   padding: 28px;
   color: #fff;
   background:
@@ -1366,7 +1485,7 @@ ul.plain {
 /* ---------- Ticket ---------- */
 .ticket {
   position: relative;
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   background: var(--surface);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-lg);
@@ -1429,7 +1548,7 @@ ul.plain {
 }
 
 .auth-side {
-  border-radius: 22px;
+  border-radius: var(--radius-lg);
   padding: 32px;
   color: #fff;
   background:
@@ -1461,6 +1580,8 @@ ul.plain {
 
 .segmented button {
   min-height: 40px;
+  padding-inline: 10px;
+  white-space: nowrap;
   background: transparent;
   color: var(--muted);
   border-color: transparent;
@@ -1597,8 +1718,10 @@ ul.plain {
   box-shadow: none;
 }
 
-.tabs button:hover {
-  background: var(--surface-2);
+@media (hover: hover) and (pointer: fine) {
+  .tabs button:hover {
+    background: var(--surface-2);
+  }
 }
 
 .tabs button[aria-pressed='true'] {
@@ -1649,10 +1772,10 @@ tr:last-child td {
 
 button.small,
 .btn.small {
-  min-height: 34px;
-  padding: 5px 12px;
-  font-size: 0.85rem;
-  border-radius: 8px;
+  min-height: 40px;
+  padding: 6px 16px;
+  font-size: 0.88rem;
+  border-radius: 10px;
 }
 
 .stat-grid {
@@ -1826,11 +1949,13 @@ dd {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.25s;
+  transition: transform 300ms var(--ease-out);
 }
 
-.gallery button:hover img {
-  transform: scale(1.04);
+@media (hover: hover) and (pointer: fine) {
+  .gallery button:hover img {
+    transform: scale(1.04);
+  }
 }
 
 .gallery button:first-child {
@@ -1870,6 +1995,12 @@ dd {
   display: grid;
   grid-template-rows: auto 1fr auto;
   color: #fff;
+  overscroll-behavior: contain;
+  transition: opacity 200ms var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+  }
 }
 
 .lightbox-bar {
@@ -1892,6 +2023,15 @@ dd {
   max-height: 78dvh;
   border-radius: 10px;
   box-shadow: 0 20px 60px rgb(0 0 0 / 0.5);
+  /* Opening only: stepping between photos (often by arrow key) stays instant. */
+  transition:
+    opacity 240ms var(--ease-out),
+    transform 240ms var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.96);
+  }
 }
 
 .lightbox button {
@@ -1902,9 +2042,11 @@ dd {
   box-shadow: none;
 }
 
-.lightbox button:hover {
-  background: rgb(255 255 255 / 0.22);
-  border-color: transparent;
+@media (hover: hover) and (pointer: fine) {
+  .lightbox button:hover {
+    background: rgb(255 255 255 / 0.22);
+    border-color: transparent;
+  }
 }
 
 /* Generated batch names are long single tokens (RCB_Kudremukh_25th_Sept_Batch_1). */
@@ -2960,6 +3102,7 @@ button.photo-cover:hover {
 .departure-org-head strong {
   font-size: 1.1rem;
   line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .departure-org-head:hover strong {
@@ -3011,11 +3154,13 @@ button.photo-cover:hover {
   height: 100%;
   aspect-ratio: auto;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  transition: transform 300ms var(--ease-out);
 }
 
-.popular-card:hover img {
-  transform: scale(1.04);
+@media (hover: hover) and (pointer: fine) {
+  .popular-card:hover img {
+    transform: scale(1.04);
+  }
 }
 
 .popular-shade {
@@ -3329,4 +3474,287 @@ button.photo-cover:hover {
 
 .review-thanks-icon {
   font-size: 2.4rem;
+}
+
+/* ---------- Polish ---------- */
+/* Digits that line up and don't jitter when counts or totals change. */
+.batch-stat strong,
+.date-block .day,
+.step-num,
+td {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Inline errors arrive after an action; easing them in reads as a response, not a glitch. */
+.notice[role='alert'] {
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* iOS zooms into any input under 16px and never zooms back out. */
+@media (pointer: coarse) {
+  .link-box input {
+    font-size: 16px;
+  }
+}
+
+/* Reduced motion: keep fades that aid comprehension, drop movement. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-property: opacity, color, background-color, border-color, box-shadow !important;
+  }
+}
+
+/* ---------- Phone-first layout ---------- */
+.popular-text strong {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+/* Landscape phones with viewport-fit=cover: keep content clear of the notch. */
+.container,
+.site-header .inner,
+.site-footer .inner {
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+
+@media (min-width: 760px) {
+  .container {
+    padding-left: max(24px, env(safe-area-inset-left));
+    padding-right: max(24px, env(safe-area-inset-right));
+  }
+}
+
+/* Price and the primary action pinned to the bottom on phones, where the sidebar sits far below. */
+.book-bar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px max(16px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom, 0px))
+    max(16px, env(safe-area-inset-left));
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: saturate(160%) blur(12px);
+  border-top: 1px solid var(--border);
+  transition:
+    transform 240ms var(--ease-out),
+    opacity 240ms var(--ease-out);
+}
+
+.book-bar[data-hidden='true'] {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.book-bar .price {
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+
+.book-bar .btn,
+.book-bar button {
+  flex: none;
+  min-width: 140px;
+}
+
+.book-bar-meta {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* Room for the bar so it never hides the footer's last line. */
+body:has(.book-bar) {
+  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 900px) {
+  .book-bar {
+    display: none;
+  }
+
+  body:has(.book-bar) {
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Quick filters scroll sideways in one row instead of stacking into ragged lines. */
+  .chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin: 14px -18px 0;
+    padding: 0 18px 2px;
+    scroll-padding-inline: 18px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chip {
+    scroll-snap-align: start;
+  }
+
+  /* Same for filter tabs (photo categories, dashboard filters), bleeding to the page edge. */
+  .tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-inline: -16px;
+    padding: 0 16px 2px;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabs button {
+    flex: none;
+  }
+
+  /* One traveller field per row: side by side, "Traveller 1 mobile (optional)" wrapped and
+     knocked its input out of line with Age. (!important beats the name field's inline span.) */
+  .traveller-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .traveller-fields > .field {
+    grid-column: auto !important;
+  }
+
+  /* Forms: cards inside the page gutter don't need desktop-sized padding. */
+  fieldset {
+    padding: 16px;
+  }
+
+  :root {
+    --card-pad: 16px;
+  }
+
+  /* Compact footer: brand across the top, link groups two-up. */
+  .site-footer .inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 16px;
+    padding-top: 28px;
+    padding-bottom: 24px;
+  }
+
+  .site-footer .inner > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .site-footer a {
+    padding: 4px 0;
+  }
+}
+
+/* Phones: the sign-in form first; the pitch is for people already convinced enough to scroll. */
+@media (max-width: 859px) {
+  .auth-side {
+    order: 2;
+    padding: 24px;
+  }
+}
+
+/* ---------- Motion ---------- */
+/* "You're booked!": a once-per-booking moment, so it gets a small celebratory beat. */
+.booked-notice {
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 300ms var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.booked-notice .icon-circle {
+  transition:
+    opacity 400ms var(--ease-out) 120ms,
+    transform 400ms cubic-bezier(0.34, 1.36, 0.64, 1) 120ms;
+
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+/* Cards revealed by "+ N more on this day" ease in (only those: the first row renders static). */
+.departure-cards > li.revealed {
+  transition:
+    opacity 220ms var(--ease-out) calc(var(--i, 0) * 40ms),
+    transform 220ms var(--ease-out) calc(var(--i, 0) * 40ms);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* A traveller added by raising the seat count fades in rather than popping. */
+.traveller-fields + .traveller-fields {
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* Disclosure height animates where the browser supports it; elsewhere it snaps as before. */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+
+  details::details-content {
+    block-size: 0;
+    overflow: clip;
+    opacity: 0;
+    transition:
+      block-size 200ms var(--ease-out),
+      opacity 200ms var(--ease-out),
+      content-visibility 200ms allow-discrete;
+  }
+
+  details[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-bar[data-hidden='true'] {
+    transform: none;
+  }
+}
+
+/* The sticky header would otherwise cover the top of the summary when the bar scrolls to it. */
+#summary {
+  scroll-margin-top: 76px;
 }

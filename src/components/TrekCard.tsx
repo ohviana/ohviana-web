@@ -43,17 +43,14 @@ export function TrekCard({
               <Icon name="pin" size={14} /> {place}
             </span>
           )}
-          {trek.maxAltitudeM && (
+          {/* Truthy, not just present: a 0 here would render as a bare "0". */}
+          {!!trek.maxAltitudeM && (
             <span>
               <Icon name="mountain" size={14} /> {trek.maxAltitudeM.toLocaleString('en-IN')} m
             </span>
           )}
         </div>
-        {trek.summary && (
-          <p className="small muted" style={{ margin: 0 }}>
-            {trek.summary}
-          </p>
-        )}
+        {trek.summary && <p className="small muted trek-summary">{trek.summary}</p>}
         <div className="trek-card-foot">
           {a.batchCount > 0 ? (
             <>

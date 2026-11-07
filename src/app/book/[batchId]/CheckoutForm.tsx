@@ -80,6 +80,19 @@ export function CheckoutForm({ batch, via }: Props) {
 
   const total = useMemo(() => batch.pricePaise * quantity, [batch.pricePaise, quantity]);
 
+  // Phones: a bottom bar carries the total until the summary (and its button) scrolls into view.
+  const summaryRef = useRef<HTMLElement>(null);
+  const [summaryVisible, setSummaryVisible] = useState(false);
+  useEffect(() => {
+    const el = summaryRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setSummaryVisible(!!e?.isIntersecting), {
+      threshold: 0.2,
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   /** The request body, or null after showing what to fix. */
   function prepare(): { phone: string; serialized: string } | null {
     const fail = (message: string) => {
@@ -387,7 +400,7 @@ export function CheckoutForm({ batch, via }: Props) {
         </fieldset>
       </div>
 
-      <aside className="card stack sticky">
+      <aside className="card stack sticky" id="summary" ref={summaryRef}>
         <h2>Summary</h2>
         <dl className="kv small">
           <dt>Departure</dt>
@@ -434,6 +447,26 @@ export function CheckoutForm({ batch, via }: Props) {
           </>
         )}
       </aside>
+
+      <div className="book-bar" data-hidden={summaryVisible}>
+        <span>
+          <span className="price">{price(total)}</span>
+          <span className="book-bar-meta">
+            {quantity} {quantity === 1 ? 'traveller' : 'travellers'}
+          </span>
+        </span>
+        <button
+          type="button"
+          onClick={() =>
+            summaryRef.current?.scrollIntoView({
+              behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+              block: 'start',
+            })
+          }
+        >
+          Review &amp; book
+        </button>
+      </div>
     </form>
   );
 }

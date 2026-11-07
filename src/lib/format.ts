@@ -57,10 +57,16 @@ export function dateRange(startIso: string, endIso: string): string {
     : `${fmt(startIso, { day: 'numeric', month: 'short' })} – ${fmt(endIso, { day: 'numeric', month: 'short' })}`;
 }
 
-/** Nights between departure and return, e.g. an overnight Friday trek returning Sunday. */
+/**
+ * Nights between departure and return, e.g. an overnight Friday trek returning Sunday. Counted on
+ * IST calendar dates, not elapsed hours: Fri 9:30 pm → Sun 6 am is only 33 hours, but two nights.
+ */
 export function durationLabel(startIso: string, endIso: string): string {
-  const days = Math.max(1, Math.round((Date.parse(endIso) - Date.parse(startIso)) / 86_400_000));
-  return days === 1 ? '1 day' : `${days} days`;
+  const istDay = (iso: string) =>
+    Date.parse(new Date(iso).toLocaleDateString('en-CA', { timeZone: IST }));
+  const nights = Math.max(0, Math.round((istDay(endIso) - istDay(startIso)) / 86_400_000));
+  if (nights === 0) return 'Day trip';
+  return nights === 1 ? '1 night' : `${nights} nights`;
 }
 
 /** Today's date in IST as YYYY-MM-DD (for date input `min`). */

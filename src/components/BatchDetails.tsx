@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { PublicBatch } from '@ohviana/contracts';
-import { dateTime, durationLabel, longDate, price, seatsLabel } from '@/lib/format';
+import { dateRange, dateTime, durationLabel, longDate, price, seatsLabel } from '@/lib/format';
 import { Icon } from './Icon';
 import { PhotoGallery } from './PhotoGallery';
 
@@ -11,7 +11,6 @@ export function BatchDetails({ batch, via }: { batch: PublicBatch; via?: string 
   return (
     <div className="two-col">
       <div className="stack-lg">
-        <PhotoGallery photos={t.photos} title={t.title} />
         <header className="stack">
           <span className="small muted">
             <Link href={`/treks/${batch.catalogTrek.slug}`}>{batch.catalogTrek.name}</Link> · by{' '}
@@ -24,6 +23,9 @@ export function BatchDetails({ batch, via }: { batch: PublicBatch; via?: string 
             </p>
           )}
         </header>
+
+        {/* Title first: on a phone the gallery would otherwise fill the first screen unlabelled. */}
+        <PhotoGallery photos={t.photos} title={t.title} />
 
         {t.itinerary.length > 0 && (
           <section className="stack">
@@ -147,6 +149,23 @@ export function BatchDetails({ batch, via }: { batch: PublicBatch; via?: string 
           </p>
         )}
       </aside>
+
+      {batch.availability === 'available' && (
+        <div className="book-bar">
+          <span>
+            <span className="price">
+              {price(batch.pricePaise)}
+              <small> /person</small>
+            </span>
+            <span className="book-bar-meta">
+              {dateRange(batch.departureAt, batch.returnAt)} · {seatsLabel(batch.seatsLeft)}
+            </span>
+          </span>
+          <Link href={`/book/${batch.id}${viaQs}`} className="btn">
+            Book seats
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

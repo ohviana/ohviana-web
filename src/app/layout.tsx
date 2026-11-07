@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Fraunces, Plus_Jakarta_Sans } from 'next/font/google';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { BrandMark } from '@/components/BrandMark';
@@ -13,6 +13,13 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
 // Self-hosted at build time by Next (no request to Google from visitors' browsers).
 const font = Plus_Jakarta_Sans({ subsets: ['latin'], display: 'swap', variable: '--font-sans' });
+// Display serif for headings and trek names: the "classic" half of the look.
+const serif = Fraunces({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-serif',
+  axes: ['opsz'],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -22,11 +29,14 @@ export const metadata: Metadata = {
   openGraph: { siteName: 'Ohviana', type: 'website', locale: 'en_IN' },
 };
 
+// Matches the header (--surface) so the browser chrome blends into it rather than banding above it.
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#073d27' },
-    { media: '(prefers-color-scheme: dark)', color: '#04170f' },
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#161a17' },
   ],
+  // Lets fixed bottom bars pad themselves clear of the home indicator (env(safe-area-inset-*)).
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -35,7 +45,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // suppressHydrationWarning: THEME_SCRIPT sets data-theme before React hydrates.
     <html
       lang="en-IN"
-      className={font.variable}
+      className={`${font.variable} ${serif.variable}`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
