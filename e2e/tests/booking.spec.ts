@@ -1,22 +1,32 @@
 import { expect, test, type Page } from '@playwright/test';
-import { bookingByReference, removeBookings, removePhoneSignIns, seedDirectLinkToken } from './db';
-import { enterPhoneCode, testPhone } from './phone';
+import { bookingByReference, removeBookings, removeTestAccounts, seedDirectLinkToken } from './db';
+import { testPhone } from './phone';
+import { devSignIn, testEmail } from './signin';
 
 /** Requires seed data: `npm run db:seed` (Kudremukh, Ghats Trail Co., ...). */
 
 const made: string[] = [];
-const phones: string[] = [];
+const accounts: string[] = [];
 
 test.afterEach(async () => {
   await removeBookings(made.splice(0));
-  await removePhoneSignIns(phones.splice(0));
+  await removeTestAccounts(accounts.splice(0));
 });
 
-/** Fills checkout with a fresh mobile number and returns it (E.164). */
+/** Checkout asks people to sign in before the form; bookings belong to an account. */
+async function signInAtCheckout(page: Page) {
+  await expect(page.getByRole('heading', { name: 'Sign in to book' })).toBeVisible();
+  const email = testEmail();
+  accounts.push(email);
+  await devSignIn(page, email);
+}
+
+/** Signs in, then fills checkout with a fresh mobile number and returns it (E.164). */
 async function fillCheckout(page: Page, opts: { phone?: string } = {}) {
   const fresh = testPhone();
-  phones.push(fresh.e164);
+  await signInAtCheckout(page);
   await expect(page.getByRole('heading', { name: /^Book / })).toBeVisible();
+  await expect(page.getByLabel('Full name')).toBeVisible();
   await page.getByLabel('Full name').fill('Asha Rao');
   await page
     .getByLabel('Mobile')
@@ -37,7 +47,6 @@ async function pickFirstDate(page: Page) {
 
 async function confirmAndGetReference(page: Page): Promise<string> {
   await page.getByRole('button', { name: 'Confirm booking' }).click();
-  await enterPhoneCode(page);
   await page.waitForURL(/\/bookings\/OHV-[A-Z0-9]{8}$/);
   const reference = page.url().split('/').pop()!;
   made.push(reference);

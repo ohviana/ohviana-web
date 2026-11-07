@@ -1,76 +1,57 @@
 import { randomUUID } from 'node:crypto';
 import { expect, test, type Page } from '@playwright/test';
-import { removePhoneSignIns, removeWalkthroughData, sql } from './db';
-import { enterPhoneCode, testPhone } from './phone';
+import { removeWalkthroughData, sql } from './db';
+import { testPhone } from './phone';
+import { devSignIn } from './signin';
 
 /**
- * Full operator walkthrough through the real UI with email + password accounts:
- * organizer signs up and registers → admin approves → organizer adds a trek, adds its first date and
+ * Full operator walkthrough through the real UI, signed in with the testing login:
+ * organizer signs in and registers → admin approves → organizer adds a trek, adds its first date and
  * publishes it → repeats the batch a week later → shares the batch's link → a guest
  * books through it → organizer adds phone bookings to the batch and sees the totals.
  *
- * Needs NEXT_PUBLIC_AUTH_MODE=password and AUTH_JWT_SECRET on the API.
+ * Long, so opt-in: E2E_WALKTHROUGH=1 with NEXT_PUBLIC_AUTH_MODE=dev (web) and AUTH_MODE=dev (API).
  */
-const PASSWORD_AUTH = process.env.NEXT_PUBLIC_AUTH_MODE === 'password';
+const RUN = !!process.env.E2E_WALKTHROUGH && process.env.NEXT_PUBLIC_AUTH_MODE === 'dev';
 const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000';
 const tag = randomUUID().slice(0, 6);
 const ORG_NAME = `E2E Trails ${tag}`;
 const ORG_EMAIL = `e2e-org-${tag}@test.ohviana.dev`;
 const ADMIN_EMAIL = `e2e-admin-${tag}@test.ohviana.dev`;
-const PASSWORD = `Trek-${tag}-pass!`;
+const GUEST_EMAIL = `e2e-guest-${tag}@test.ohviana.dev`;
 const GUEST_PHONE = testPhone();
 
-test.skip(!PASSWORD_AUTH, 'Requires NEXT_PUBLIC_AUTH_MODE=password');
+test.skip(!RUN, 'Opt-in: E2E_WALKTHROUGH=1 with the dev sign-in (NEXT_PUBLIC_AUTH_MODE=dev)');
 // The operator console is a desktop tool; the phone project covers customer journeys.
 test.skip(({ isMobile }) => isMobile, 'Desktop only');
 test.describe.configure({ mode: 'serial' });
 
 test.beforeAll(async () => {
   await removeWalkthroughData();
-  // A throwaway admin: sign up through the API, then grant admin directly in the database.
-  const res = await fetch(`${API}/v1/auth/signup`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ email: ADMIN_EMAIL, password: PASSWORD, fullName: 'E2E Admin' }),
-  });
-  if (!res.ok) throw new Error(`admin signup failed: ${res.status} ${await res.text()}`);
+  // A throwaway admin: the dev login creates the account on first use; grant admin directly.
+  const res = await fetch(`${API}/v1/me`, { headers: { 'x-dev-user': ADMIN_EMAIL } });
+  if (!res.ok) throw new Error(`admin sign-in failed: ${res.status} ${await res.text()}`);
   const { user } = (await res.json()) as { user: { id: string } };
   await sql`insert into platform_admins (user_id) values (${user.id}) on conflict do nothing`;
 });
 test.afterAll(async () => {
   await removeWalkthroughData();
-  await removePhoneSignIns([GUEST_PHONE.e164]);
+  // e2e-%@test.ohviana.dev accounts (organizer, admin, guest) go with the walkthrough data.
 });
 
-async function openAuth(page: Page, tab: 'Sign in' | 'Create account') {
-  await page.goto('/login?next=/dashboard');
-  await page
-    .getByRole('group', { name: 'Sign in or create account' })
-    .getByRole('button', { name: tab })
-    .click();
-}
-
-async function signUp(page: Page, email: string, name: string) {
-  await openAuth(page, 'Create account');
-  await page.getByLabel('Your name').fill(name);
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill(PASSWORD);
-  await page.locator('button[type="submit"]').click();
-  // Path check: the sign-in URL itself contains ?next=/dashboard.
-  await page.waitForURL((url) => url.pathname.startsWith('/dashboard'));
-}
-
+/** New and returning people sign in the same way; the account is created on first use. */
 async function signIn(page: Page, email: string) {
-  await openAuth(page, 'Sign in');
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill(PASSWORD);
-  await page.locator('button[type="submit"]').click();
+  await page.goto('/login?next=/dashboard');
+  await devSignIn(page, email);
   // Path check: the sign-in URL itself contains ?next=/dashboard.
   await page.waitForURL((url) => url.pathname.startsWith('/dashboard'));
 }
 
 async function signOut(page: Page) {
-  await page.evaluate(() => localStorage.removeItem('ohviana:session'));
+  await page.evaluate(() => {
+    localStorage.removeItem('ohviana:dev-user');
+    localStorage.removeItem('ohviana:session');
+  });
 }
 
 /** IST wall-clock string for a datetime-local input, `days` from now at `hh:mm`. */
@@ -84,7 +65,7 @@ test('organizer + admin walkthrough, end to end', async ({ page }) => {
   page.on('dialog', (d) => void (d.type() === 'prompt' ? d.accept('7.5') : d.accept()));
 
   // 1. A new organizer creates an account and registers their organization.
-  await signUp(page, ORG_EMAIL, 'Ravi Organizer');
+  await signIn(page, ORG_EMAIL);
   await expect(page.getByRole('heading', { name: 'List your trips on Ohviana' })).toBeVisible();
   await page.getByLabel('Organization name').fill(ORG_NAME);
   await page.getByLabel('City').fill('Bengaluru');
@@ -163,18 +144,19 @@ test('organizer + admin walkthrough, end to end', async ({ page }) => {
   const shareUrl = await page.getByLabel('Booking link').inputValue();
   expect(shareUrl).toMatch(/\/b\/[A-Za-z0-9_-]{32}$/);
 
-  // 6. A customer books through the link (signed out: the SMS code signs them in).
+  // 6. A customer books through the link (signed out: checkout asks them to sign in first).
   await signOut(page);
   await page.goto(shareUrl);
   await expect(page.getByText(`You're booking directly with`)).toBeVisible();
   // Customers see the organizer's photos.
   await expect(page.locator('.gallery img').first()).toBeVisible();
   await page.getByRole('link', { name: 'Book seats' }).click();
+  await expect(page.getByRole('heading', { name: 'Sign in to book' })).toBeVisible();
+  await devSignIn(page, GUEST_EMAIL);
   await page.getByLabel('Full name').fill('Ravi Kumar');
   await page.getByLabel('Mobile').first().fill(GUEST_PHONE.typed);
   await page.getByLabel('Traveller 1 name').fill('Ravi Kumar');
   await page.getByRole('button', { name: 'Confirm booking' }).click();
-  await enterPhoneCode(page);
   await page.waitForURL(/\/bookings\/OHV-/);
   await expect(page.getByText("You're booked!")).toBeVisible();
   await expect(page.getByText('TREK PASS')).toBeVisible();

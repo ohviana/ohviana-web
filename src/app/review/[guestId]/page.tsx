@@ -54,7 +54,10 @@ function StarInput({
 /** A traveller reviews a finished trip: overall stars, five optional side ratings, a comment. */
 export default function ReviewPage() {
   const { guestId } = useParams<{ guestId: string }>();
-  const trips = useLoad(() => authedFetch('/v1/me/review-trips', ReviewTripList), []);
+  const trips = useLoad(
+    () => authedFetch('/v1/me/review-trips', ReviewTripList, { asPhone: true }),
+    [],
+  );
   const [overall, setOverall] = useState(0);
   const [aspects, setAspects] = useState<Partial<Record<ReviewAspect, number>>>({});
   const [skipped, setSkipped] = useState<Partial<Record<ReviewAspect, boolean>>>({});
@@ -79,7 +82,7 @@ export default function ReviewPage() {
       comment: comment.trim() || undefined,
     };
     const saved = await action.run(() =>
-      authedFetch('/v1/me/reviews', OwnReview, { method: 'POST', body }),
+      authedFetch('/v1/me/reviews', OwnReview, { method: 'POST', body, asPhone: true }),
     );
     if (saved) setDone(true);
   }

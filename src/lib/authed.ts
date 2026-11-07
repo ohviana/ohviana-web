@@ -10,6 +10,8 @@ export interface AuthedOptions {
   body?: unknown;
   /** Active organizer for /v1/organizer/* calls. */
   organizerId?: string | null;
+  /** Review calls: act as the phone sign-in, which proves the traveller's mobile. */
+  asPhone?: boolean;
 }
 
 /** Calls the API as the signed-in user. Throws ApiError(401) when signed out. */
@@ -18,7 +20,7 @@ export async function authedFetch<T extends z.ZodType>(
   schema: T,
   opts: AuthedOptions = {},
 ): Promise<z.infer<T>> {
-  const auth = await authHeader();
+  const auth = await authHeader({ phone: opts.asPhone });
   if (Object.keys(auth).length === 0) {
     throw new ApiError(401, 'UNAUTHENTICATED', 'Please sign in again');
   }

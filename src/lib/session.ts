@@ -6,23 +6,19 @@ import { getSupabase } from './supabase';
 
 /**
  * How people sign in (NEXT_PUBLIC_AUTH_MODE):
- *  - `password` — email + password accounts run by the Ohviana API (no emails sent).
- *  - `supabase` — Supabase magic-link email (rate-limited on the free plan).
- *  - `dev`      — TEMPORARY local testing: email only, no password (API AUTH_MODE=dev).
- * Customers sign in with a phone code at checkout in every mode (an Ohviana API session).
+ *  - `supabase` — Continue with Google, or a code emailed through Supabase (Brevo SMTP).
+ *  - `dev`      — TEMPORARY local testing: email only, no code (API AUTH_MODE=dev).
+ * Separately, a phone + SMS code (an Ohviana API session) proves the mobile a traveller went on a
+ * trip with, for reviews, and lets trip leads open the departures they lead.
  */
-export type AuthMode = 'password' | 'supabase' | 'dev';
-export const AUTH_MODE: AuthMode = (['password', 'dev'] as const).includes(
-  process.env.NEXT_PUBLIC_AUTH_MODE as 'password' | 'dev',
-)
-  ? (process.env.NEXT_PUBLIC_AUTH_MODE as AuthMode)
-  : 'supabase';
+export type AuthMode = 'supabase' | 'dev';
+export const AUTH_MODE: AuthMode = process.env.NEXT_PUBLIC_AUTH_MODE === 'dev' ? 'dev' : 'supabase';
 
-const SESSION_KEY = 'ohviana:session';
+const PHONE_SESSION_KEY = 'ohviana:session';
 const DEV_USER_KEY = 'ohviana:dev-user';
 const AUTH_EVENT = 'ohviana:auth-change';
 
-interface StoredSession {
+interface PhoneSession {
   accessToken: string;
   expiresAt: string;
   email: string | null;
@@ -38,6 +34,10 @@ function read<T>(key: string): T | null {
   }
 }
 
+function notify(): void {
+  window.dispatchEvent(new Event(AUTH_EVENT));
+}
+
 function write(key: string, value: unknown): void {
   try {
     if (value === null) localStorage.removeItem(key);
@@ -45,43 +45,49 @@ function write(key: string, value: unknown): void {
   } catch {
     // Storage unavailable (private mode): the session lasts for this page only.
   }
-  window.dispatchEvent(new Event(AUTH_EVENT));
+  notify();
 }
 
-function currentSession(): StoredSession | null {
-  const s = read<StoredSession>(SESSION_KEY);
+function phoneSession(): PhoneSession | null {
+  const s = read<PhoneSession>(PHONE_SESSION_KEY);
   if (!s) return null;
   // Treat as expired a minute early so requests never race the expiry.
   return Date.parse(s.expiresAt) - 60_000 > Date.now() ? s : null;
 }
 
-// ---------- Password mode ----------
+// ---------- Google and email code (Supabase) ----------
 
-async function startSession(
-  path: '/v1/auth/signin' | '/v1/auth/signup' | '/v1/auth/otp/verify',
-  body: object,
-) {
-  const session = await apiFetch(path, SessionResponse, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body),
+/** Leaves for Google; Supabase returns to /auth/callback, which continues to `next`. */
+export async function signInWithGoogle(next: string): Promise<void> {
+  const callback = new URL('/auth/callback', window.location.origin);
+  callback.searchParams.set('next', next);
+  const { error } = await getSupabase().auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: callback.toString() },
   });
-  write(SESSION_KEY, {
-    accessToken: session.accessToken,
-    expiresAt: session.expiresAt,
-    email: session.user.email,
-    phone: session.user.phone,
-  } satisfies StoredSession);
-  return session;
+  if (error) throw error;
 }
 
-export const signInWithPassword = (email: string, password: string) =>
-  startSession('/v1/auth/signin', { email, password });
+/** Emails a sign-in code (creating the account on first use). */
+export async function sendEmailCode(email: string): Promise<void> {
+  const { error } = await getSupabase().auth.signInWithOtp({
+    email: email.trim(),
+    options: { shouldCreateUser: true },
+  });
+  if (error) throw error;
+}
 
-export const signUpWithPassword = (email: string, password: string, fullName?: string) =>
-  startSession('/v1/auth/signup', { email, password, ...(fullName ? { fullName } : {}) });
+export async function verifyEmailCode(email: string, code: string): Promise<void> {
+  const { error } = await getSupabase().auth.verifyOtp({
+    email: email.trim(),
+    token: code.trim(),
+    type: 'email',
+  });
+  if (error) throw error;
+  notify();
+}
 
-// ---------- Phone + SMS code (customers, any mode) ----------
+// ---------- Phone + SMS code (reviews, trip leads) ----------
 
 /** Texts a 6-digit sign-in code to `phone` (E.164). */
 export const sendPhoneCode = (phone: string) =>
@@ -91,8 +97,20 @@ export const sendPhoneCode = (phone: string) =>
     body: JSON.stringify({ phone }),
   });
 
-export const signInWithPhoneCode = (phone: string, code: string) =>
-  startSession('/v1/auth/otp/verify', { phone, code });
+export async function signInWithPhoneCode(phone: string, code: string) {
+  const session = await apiFetch('/v1/auth/otp/verify', SessionResponse, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ phone, code }),
+  });
+  write(PHONE_SESSION_KEY, {
+    accessToken: session.accessToken,
+    expiresAt: session.expiresAt,
+    email: session.user.email,
+    phone: session.user.phone,
+  } satisfies PhoneSession);
+  return session;
+}
 
 // ---------- Dev mode ----------
 
@@ -104,24 +122,24 @@ export function setDevUser(email: string | null): void {
   } catch {
     // ignore
   }
-  window.dispatchEvent(new Event(AUTH_EVENT));
+  notify();
+}
+
+function devUser(): string | null {
+  try {
+    return localStorage.getItem(DEV_USER_KEY);
+  } catch {
+    return null;
+  }
 }
 
 // ---------- Mode-agnostic API used by pages ----------
 
-/** Credentials header for the signed-in user, or {} for guests. Never throws. */
-export async function authHeader(): Promise<Record<string, string>> {
-  // An Ohviana session (password or phone sign-in) wins in every mode.
-  const s = currentSession();
-  if (s) return { authorization: `Bearer ${s.accessToken}` };
-  if (AUTH_MODE === 'password') return {};
+/** The Google / email-code (or dev) sign-in, if any. */
+async function mainHeader(): Promise<Record<string, string>> {
   if (AUTH_MODE === 'dev') {
-    try {
-      const email = localStorage.getItem(DEV_USER_KEY);
-      return email ? { 'x-dev-user': email } : {};
-    } catch {
-      return {};
-    }
+    const email = devUser();
+    return email ? { 'x-dev-user': email } : {};
   }
   try {
     const { data } = await getSupabase().auth.getSession();
@@ -131,23 +149,35 @@ export async function authHeader(): Promise<Record<string, string>> {
   }
 }
 
+/**
+ * Credentials for the signed-in person, or {} for guests. Never throws. The Google / email-code
+ * account comes first, so verifying a phone for a review never swaps an organizer out of their
+ * account; `{ phone: true }` (review calls) prefers the phone sign-in, which proves the number.
+ */
+export async function authHeader(opts: { phone?: boolean } = {}): Promise<Record<string, string>> {
+  const phone = phoneSession();
+  const phoneHeader: Record<string, string> = phone
+    ? { authorization: `Bearer ${phone.accessToken}` }
+    : {};
+  if (opts.phone && phone) return phoneHeader;
+  const main = await mainHeader();
+  return Object.keys(main).length > 0 ? main : phoneHeader;
+}
+
 export async function isSignedIn(): Promise<boolean> {
   return Object.keys(await authHeader()).length > 0;
 }
 
-/** Email of the signed-in user when known locally (password/dev modes). */
-export function signedInEmail(): string | null {
-  const s = currentSession();
-  if (s) return s.email;
-  if (AUTH_MODE === 'password') return null;
-  if (AUTH_MODE === 'dev') {
-    try {
-      return localStorage.getItem(DEV_USER_KEY);
-    } catch {
-      return null;
-    }
+/** Email of the signed-in person, when there is one. */
+export async function signedInEmail(): Promise<string | null> {
+  if (AUTH_MODE === 'dev') return devUser() ?? phoneSession()?.email ?? null;
+  try {
+    const { data } = await getSupabase().auth.getSession();
+    if (data.session) return data.session.user.email ?? null;
+  } catch {
+    // Supabase not configured: fall through to a phone sign-in.
   }
-  return null;
+  return phoneSession()?.email ?? null;
 }
 
 /** Calls `cb` whenever the user signs in or out. Returns an unsubscribe function. */
@@ -171,11 +201,15 @@ export function onAuthChange(cb: () => void): () => void {
   }
 }
 
+/** Signs out of everything on this device: the main sign-in and any phone sign-in. */
 export async function signOut(): Promise<void> {
-  write(SESSION_KEY, null);
-  if (AUTH_MODE === 'password') return;
+  write(PHONE_SESSION_KEY, null);
   if (AUTH_MODE === 'dev') return setDevUser(null);
-  await getSupabase().auth.signOut();
+  try {
+    await getSupabase().auth.signOut();
+  } catch {
+    // Not configured: nothing to sign out of.
+  }
 }
 
 const TOKEN_PREFIX = 'ohviana:booking-token:';

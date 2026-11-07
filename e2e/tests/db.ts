@@ -82,3 +82,11 @@ export async function removePhoneSignIns(phones: string[]): Promise<void> {
     delete from users u where u.phone = any(${phones}) and u.email is null
       and not exists (select 1 from bookings k where k.user_id = u.id)`;
 }
+
+/** Removes test sign-in accounts once their bookings are gone. */
+export async function removeTestAccounts(emails: string[]): Promise<void> {
+  if (emails.length === 0) return;
+  await sql`
+    delete from users u where lower(u.email) = any(${emails})
+      and not exists (select 1 from bookings k where k.user_id = u.id)`;
+}

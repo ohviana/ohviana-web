@@ -19,7 +19,7 @@ export function SiteNav() {
 
   useEffect(() => {
     const refresh = async () =>
-      setOperator((await isSignedIn()) ? { email: signedInEmail() } : null);
+      setOperator((await isSignedIn()) ? { email: await signedInEmail() } : null);
     void refresh();
     return onAuthChange(() => void refresh());
   }, []);

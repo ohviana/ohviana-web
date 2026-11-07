@@ -56,7 +56,7 @@ Set these in Vercel → Project → Settings → Environment Variables (Producti
 | -------------------------------------- | -------------------------------------- |
 | `NEXT_PUBLIC_API_BASE_URL`             | `https://api.ohviana.com`              |
 | `NEXT_PUBLIC_SITE_URL`                 | `https://ohviana.com`                  |
-| `NEXT_PUBLIC_AUTH_MODE`                | `password`                             |
+| `NEXT_PUBLIC_AUTH_MODE`                | `supabase` (Google + email code)       |
 | `NEXT_PUBLIC_SUPABASE_URL`             | `https://<project-ref>.supabase.co`    |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | the publishable key (never the secret) |
 
