@@ -284,20 +284,23 @@ code {
   text-decoration: none;
 }
 
+/* The logo lockup on its dark tile (same in both themes); height sets the size. */
 .brand-mark {
   display: block;
-  width: 34px;
-  height: 34px;
+  height: 40px;
+  width: auto;
   flex: none;
-  border-radius: 9px;
-  overflow: hidden;
+  border-radius: 8px;
 }
 
-/* A square dark tile; .brand-mark rounds its corners. */
-.brand-mark img {
-  display: block;
-  width: 100%;
-  height: 100%;
+.site-footer .brand-mark {
+  height: 48px;
+}
+
+@media (max-width: 400px) {
+  .site-header .brand-mark {
+    height: 36px;
+  }
 }
 
 .nav {

@@ -62,7 +62,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <div className="inner">
             <Link href="/" className="brand" aria-label="Ohviana home">
               <BrandMark />
-              Ohviana
             </Link>
             <SiteNav />
           </div>
@@ -72,8 +71,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <div className="inner">
             <div className="stack" style={{ gap: 10 }}>
               <span className="brand">
-                <BrandMark />
-                Ohviana
+                <BrandMark label="Ohviana" />
               </span>
               <span>Discover adventures. Book with confidence.</span>
               <div className="social">
