@@ -16,7 +16,10 @@ const rank = (t: ReviewTrip) => (t.canReview ? 0 : t.review ? 2 : 1);
  * mobile, so friends booked by someone else see theirs too). A review opens after the return.
  */
 export function TripReviews() {
-  const trips = useLoad(() => authedFetch('/v1/me/review-trips', ReviewTripList), []);
+  const trips = useLoad(
+    () => authedFetch('/v1/me/review-trips', ReviewTripList, { asPhone: true }),
+    [],
+  );
   if (!trips.data) return null;
 
   if (!trips.data.phoneVerified) {

@@ -1,11 +1,13 @@
 import type { MetadataRoute } from 'next';
-import { SITE_URL } from '@/lib/env';
+import { IS_TEST_ENV, SITE_URL } from '@/lib/env';
 
 /**
  * Index canonical trek and organizer pages; keep checkout, personal pages and the consoles out
  * (PRD: SEO). `/dashboard` itself stays crawlable: signed out, it is the organizer pitch page.
  */
 export default function robots(): MetadataRoute.Robots {
+  // The test site must never compete with ohviana.com in search results.
+  if (IS_TEST_ENV) return { rules: { userAgent: '*', disallow: '/' } };
   return {
     rules: {
       userAgent: '*',
@@ -17,6 +19,7 @@ export default function robots(): MetadataRoute.Robots {
         '/my-bookings',
         '/account',
         '/login',
+        '/auth/',
         '/search',
         '/admin',
         '/dashboard/',

@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { connection } from 'next/server';
 import { PublicSitemap } from '@ohviana/contracts';
 import { apiFetch } from '@/lib/api';
-import { SITE_URL } from '@/lib/env';
+import { IS_TEST_ENV, SITE_URL } from '@/lib/env';
 
 /** The API's list is cached for an hour; a crawler never waits on more than one slow call. */
 const REVALIDATE_S = 3600;
@@ -15,6 +15,7 @@ const TIMEOUT_MS = 8000;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Built per request, never at `next build`: the build must not depend on the API being up.
   await connection();
+  if (IS_TEST_ENV) return [];
   const pages = await apiFetch('/v1/sitemap', PublicSitemap, {
     next: { revalidate: REVALIDATE_S },
     signal: AbortSignal.timeout(TIMEOUT_MS),

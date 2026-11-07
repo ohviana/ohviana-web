@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { MyBookingList, type CustomerBooking } from '@ohviana/contracts';
 import { AccountStrip } from '@/components/AccountStrip';
 import { BookingView } from '@/components/BookingView';
-import { PhoneSignIn } from '@/components/PhoneSignIn';
+import { SignInOptions } from '@/components/SignInOptions';
 import { TripReviews } from '@/components/TripReviews';
 import { apiFetch } from '@/lib/api';
 import { authHeader, onAuthChange } from '@/lib/session';
@@ -45,9 +45,9 @@ export default function MyBookingsPage() {
       </header>
       {state.kind === 'loading' && <p className="muted">Loading…</p>}
       {state.kind === 'signed-out' && (
-        <div className="card stack" style={{ maxWidth: 420 }}>
-          <p style={{ margin: 0 }}>Sign in with your mobile number to see your bookings.</p>
-          <PhoneSignIn />
+        <div className="card stack" style={{ maxWidth: 420, gap: 16 }}>
+          <p style={{ margin: 0 }}>Sign in to see your bookings.</p>
+          <SignInOptions next="/my-bookings" onSignedIn={() => undefined} />
         </div>
       )}
       {state.kind === 'error' && <p className="notice danger">Could not load your bookings.</p>}

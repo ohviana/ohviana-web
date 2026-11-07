@@ -3761,3 +3761,35 @@ body:has(.book-bar) {
 #summary {
   scroll-margin-top: 76px;
 }
+
+/* ---------- Sign-in ---------- */
+/* Google's button: white with the "G" mark, per its branding guidelines, in both themes. */
+.google-btn {
+  background: #fff;
+  color: #1f1f1f;
+  border: 1px solid #747775;
+  font-weight: 600;
+  gap: 10px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .google-btn:hover {
+    background: #f2f4f2;
+    border-color: #747775;
+  }
+}
+
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--border);
+}

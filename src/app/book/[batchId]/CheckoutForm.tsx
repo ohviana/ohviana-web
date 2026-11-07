@@ -9,7 +9,7 @@ import {
   MyBookingList,
   type PublicBatch,
 } from '@ohviana/contracts';
-import { PhoneCodeEntry } from '@/components/PhoneCodeEntry';
+import { SignInOptions } from '@/components/SignInOptions';
 import { ApiError, apiFetch } from '@/lib/api';
 import { authedFetch } from '@/lib/authed';
 import { dateRange, dateTime, price } from '@/lib/format';
@@ -44,28 +44,39 @@ export function CheckoutForm({ batch, via }: Props) {
   const [guests, setGuests] = useState<Guest[]>([blankGuest()]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  /** Not signed in: the mobile number is confirmed with an SMS code, which also signs in. */
-  const [signedIn, setSignedIn] = useState(false);
-  const [codeFor, setCodeFor] = useState<string | null>(null);
+  /**
+   * Bookings belong to an account: people sign in (Google or an email code) before the form, so
+   * a Google round trip never loses what they typed. null while checking.
+   */
+  const [signedIn, setSignedIn] = useState<boolean | null>(null);
+
+  /** Prefill from the profile and last booking (blank fields only). */
+  async function prefill() {
+    const [me, last] = await Promise.all([
+      authedFetch('/v1/me', MeResponse).catch(() => null),
+      authedFetch('/v1/me/bookings?limit=1', MyBookingList).catch(() => null),
+    ]);
+    const previous = last?.items[0]?.contact;
+    const phone = me?.user.phone ?? previous?.phone ?? '';
+    setContact((c) => ({
+      name: c.name || me?.user.fullName || previous?.name || '',
+      phone: c.phone || phone.replace(/^\+91(?=\d{10}$)/, ''),
+      email: c.email || me?.user.email || previous?.email || '',
+    }));
+  }
 
   useEffect(() => {
     void (async () => {
-      if (!(await isSignedIn())) return;
-      setSignedIn(true);
-      // Returning customers: prefill from their profile and last booking (blank fields only).
-      const [me, last] = await Promise.all([
-        authedFetch('/v1/me', MeResponse).catch(() => null),
-        authedFetch('/v1/me/bookings?limit=1', MyBookingList).catch(() => null),
-      ]);
-      const previous = last?.items[0]?.contact;
-      const phone = me?.user.phone ?? previous?.phone ?? '';
-      setContact((c) => ({
-        name: c.name || me?.user.fullName || previous?.name || '',
-        phone: c.phone || phone.replace(/^\+91(?=\d{10}$)/, ''),
-        email: c.email || me?.user.email || previous?.email || '',
-      }));
+      const yes = await isSignedIn();
+      setSignedIn(yes);
+      if (yes) await prefill();
     })();
   }, []);
+
+  async function onSignedIn() {
+    setSignedIn(true);
+    await prefill();
+  }
 
   /**
    * One Idempotency-Key per distinct request body: retrying the same submission (double tap,
@@ -94,7 +105,7 @@ export function CheckoutForm({ batch, via }: Props) {
   }, []);
 
   /** The request body, or null after showing what to fix. */
-  function prepare(): { phone: string; serialized: string } | null {
+  function prepare(): { serialized: string } | null {
     const fail = (message: string) => {
       setError(message);
       return null;
@@ -129,7 +140,7 @@ export function CheckoutForm({ batch, via }: Props) {
         ...(g.pickupPointId ? { pickupPointId: g.pickupPointId } : {}),
       })),
     };
-    return { phone, serialized: JSON.stringify(body) };
+    return { serialized: JSON.stringify(body) };
   }
 
   async function onSubmit(e: FormEvent) {
@@ -137,16 +148,9 @@ export function CheckoutForm({ batch, via }: Props) {
     setError(null);
     const prepared = prepare();
     if (!prepared) return;
-    if (!(await isSignedIn())) return setCodeFor(prepared.phone);
+    // Signed out in another tab since: ask again rather than fail the booking.
+    if (!(await isSignedIn())) return setSignedIn(false);
     await book(prepared.serialized);
-  }
-
-  /** After the code is accepted: book with what the form holds now. */
-  async function onPhoneVerified() {
-    setSignedIn(true);
-    setCodeFor(null);
-    const prepared = prepare();
-    if (prepared) await book(prepared.serialized);
   }
 
   async function book(serialized: string) {
@@ -187,20 +191,43 @@ export function CheckoutForm({ batch, via }: Props) {
     }
   }
 
+  const backLink = `/batches/${batch.id}${via ? `?via=${encodeURIComponent(via)}` : ''}`;
+  const heading = (
+    <header className="stack">
+      <span className="small muted">
+        <Link href={backLink}>← Departure details</Link>
+      </span>
+      <h1 style={{ margin: 0 }}>Book {batch.trek.title}</h1>
+      <span className="muted">
+        {dateRange(batch.departureAt, batch.returnAt)} · {batch.organizer.name}
+      </span>
+    </header>
+  );
+
+  if (signedIn === null) return <div className="stack-lg">{heading}</div>;
+  if (!signedIn) {
+    const here = `/book/${batch.id}${via ? `?via=${encodeURIComponent(via)}` : ''}`;
+    return (
+      <div className="stack-lg" style={{ maxWidth: 520 }}>
+        {heading}
+        <section className="card stack" style={{ gap: 16 }}>
+          <div>
+            <h2 style={{ margin: '0 0 4px' }}>Sign in to book</h2>
+            <p className="small muted" style={{ margin: 0 }}>
+              Your booking is saved to your account, so you can find it in My bookings. It takes a
+              few seconds; no password.
+            </p>
+          </div>
+          <SignInOptions next={here} onSignedIn={onSignedIn} />
+        </section>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={onSubmit} className="two-col" noValidate={false}>
       <div className="stack-lg">
-        <header className="stack">
-          <span className="small muted">
-            <Link href={`/batches/${batch.id}${via ? `?via=${encodeURIComponent(via)}` : ''}`}>
-              ← Departure details
-            </Link>
-          </span>
-          <h1 style={{ margin: 0 }}>Book {batch.trek.title}</h1>
-          <span className="muted">
-            {dateRange(batch.departureAt, batch.returnAt)} · {batch.organizer.name}
-          </span>
-        </header>
+        {heading}
 
         <fieldset className="stack">
           <legend>
@@ -416,7 +443,6 @@ export function CheckoutForm({ batch, via }: Props) {
         </div>
         <p className="small muted" style={{ margin: 0 }}>
           Payment is arranged with the organizer. Your seats are confirmed as soon as you book.
-          {!signedIn && ' We’ll text a code to your mobile to confirm it’s you.'}
         </p>
         {batch.trek.cancellationPolicy && (
           <details className="small">
@@ -424,28 +450,14 @@ export function CheckoutForm({ batch, via }: Props) {
             <p style={{ whiteSpace: 'pre-line', marginTop: 8 }}>{batch.trek.cancellationPolicy}</p>
           </details>
         )}
-        {codeFor && codeFor === toE164(contact.phone) ? (
-          <PhoneCodeEntry
-            phone={codeFor}
-            action="Verify & book"
-            onVerified={onPhoneVerified}
-            onChangeNumber={() => {
-              setCodeFor(null);
-              document.getElementById('c-phone')?.focus();
-            }}
-          />
-        ) : (
-          <>
-            {error && (
-              <p className="notice danger small" role="alert" style={{ margin: 0 }}>
-                {error}
-              </p>
-            )}
-            <button type="submit" disabled={submitting}>
-              {submitting ? 'Booking…' : 'Confirm booking'}
-            </button>
-          </>
+        {error && (
+          <p className="notice danger small" role="alert" style={{ margin: 0 }}>
+            {error}
+          </p>
         )}
+        <button type="submit" disabled={submitting}>
+          {submitting ? 'Booking…' : 'Confirm booking'}
+        </button>
       </aside>
 
       <div className="book-bar" data-hidden={summaryVisible}>

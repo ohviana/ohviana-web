@@ -10,6 +10,12 @@ export const CONFIGURED_SITE_URL = configured(process.env.NEXT_PUBLIC_SITE_URL);
 /** Absolute origin for canonical URLs, the sitemap and metadata; localhost in development. */
 export const SITE_URL = CONFIGURED_SITE_URL ?? 'http://localhost:3000';
 
+/**
+ * `test` on test.ohviana.com (NEXT_PUBLIC_ENVIRONMENT): kept out of search engines and marked
+ * with a banner. Anything else, including unset, is production.
+ */
+export const IS_TEST_ENV = process.env.NEXT_PUBLIC_ENVIRONMENT === 'test';
+
 /** The Ohviana API (ohviana-apis). */
 export const API_BASE_URL =
   configured(process.env.NEXT_PUBLIC_API_BASE_URL) ?? 'http://localhost:4000';

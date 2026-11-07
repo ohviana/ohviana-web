@@ -6,6 +6,7 @@ const PUBLIC_ENV_KEYS = [
   'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY',
   'NEXT_PUBLIC_SITE_URL',
   'NEXT_PUBLIC_AUTH_MODE',
+  'NEXT_PUBLIC_ENVIRONMENT',
 ] as const;
 
 /**
@@ -34,6 +35,12 @@ if (process.env.VERCEL_ENV === 'production' && !publicEnv.NEXT_PUBLIC_API_BASE_U
   );
 }
 
+/**
+ * test.ohviana.com is a real deployment (its project's Production), not a Vercel preview, so
+ * Vercel won't hide it from search engines: every response says noindex instead.
+ */
+const IS_TEST_ENV = publicEnv.NEXT_PUBLIC_ENVIRONMENT === 'test';
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
@@ -58,6 +65,7 @@ const nextConfig: NextConfig = {
             value: 'camera=(), microphone=(), geolocation=(), payment=()',
           },
           { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+          ...(IS_TEST_ENV ? [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] : []),
         ],
       },
     ];
