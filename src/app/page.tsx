@@ -1,13 +1,19 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { PublicTrekList } from '@ohviana/contracts';
 import { Icon } from '@/components/Icon';
+import { JsonLd } from '@/components/JsonLd';
 import { Mountains } from '@/components/Mountains';
 import { SearchForm, thisWeekend } from '@/components/SearchForm';
 import { TrekCard } from '@/components/TrekCard';
 import { apiFetch, qs } from '@/lib/api';
 import { thisAndNextWeekIst } from '@/lib/format';
+import { siteJsonLd } from '@/lib/seo';
 
 export const revalidate = 60;
+
+// Without it, links with tracking parameters (?utm_source=…) count as separate pages.
+export const metadata: Metadata = { alternates: { canonical: '/' } };
 
 /** Treks shown under "Popular right now". */
 const POPULAR = 3;
@@ -34,6 +40,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd data={siteJsonLd()} />
       <section className="hero">
         <div className="container">
           <span className="badge glass">

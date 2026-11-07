@@ -3,8 +3,11 @@ import Link from 'next/link';
 import { PublicBatchList, PublicOrganizerDetail, PublicReviewPage } from '@ohviana/contracts';
 import { DepartureGroups, OrgMark } from '@/components/DepartureGroups';
 import { Icon, type IconName } from '@/components/Icon';
+import { JsonLd } from '@/components/JsonLd';
 import { RatingBadge, RatingSummaryCard, ReviewCard } from '@/components/Stars';
 import { apiFetch, apiFetchOrNotFound, qs } from '@/lib/api';
+import { logoSrc } from '@/lib/media';
+import { breadcrumbJsonLd, DEFAULT_SHARE_IMAGE, metaDescription, organizerJsonLd } from '@/lib/seo';
 import { one, type SearchParams } from '@/lib/params';
 
 type Params = Promise<{ slug: string }>;
@@ -21,11 +24,23 @@ const getOrganizer = (slug: string) =>
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const o = await getOrganizer((await params).slug);
+  const description = metaDescription([
+    o.tagline ?? `Trips and treks by ${o.name}${o.city ? `, ${o.city}` : ''}.`,
+    o.rating && o.rating.count > 0
+      ? `Rated ${o.rating.average.toFixed(1)}/5 by ${o.rating.count} ${o.rating.count === 1 ? 'traveller' : 'travellers'}.`
+      : null,
+    o.upcomingBatchCount > 0
+      ? `${o.upcomingBatchCount} upcoming ${o.upcomingBatchCount === 1 ? 'departure' : 'departures'}, verified by Ohviana.`
+      : 'Verified by Ohviana.',
+  ]);
+  const image = o.logoUrl ? logoSrc(o.logoUrl) : DEFAULT_SHARE_IMAGE;
   return {
     title: `${o.name} — trip departures`,
-    description:
-      o.tagline ?? `Upcoming trip departures by ${o.name}${o.city ? `, ${o.city}` : ''}.`,
+    description,
     alternates: { canonical: `/organizers/${o.slug}` },
+    // A logo reads best as the small square card; the site image as the large one.
+    openGraph: { title: o.name, description, images: [image] },
+    twitter: { card: o.logoUrl ? 'summary' : 'summary_large_image', images: [image] },
   };
 }
 
@@ -81,6 +96,8 @@ export default async function OrganizerPage({
 
   return (
     <div className="container stack-lg">
+      <JsonLd data={organizerJsonLd(o)} />
+      <JsonLd data={breadcrumbJsonLd([{ name: o.name, path: `/organizers/${o.slug}` }])} />
       <header className="card org-hero">
         <OrgMark name={o.name} logoUrl={o.logoUrl} size={84} />
         <div className="stack" style={{ gap: 6, minWidth: 0 }}>
