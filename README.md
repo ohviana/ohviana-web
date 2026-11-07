@@ -52,13 +52,14 @@ database). The API is a separate Vercel project from ohviana-apis, at `https://a
 
 Set these in Vercel → Project → Settings → Environment Variables (Production):
 
-| Variable                               | Production value                       |
-| -------------------------------------- | -------------------------------------- |
-| `NEXT_PUBLIC_API_BASE_URL`             | `https://api.ohviana.com`              |
-| `NEXT_PUBLIC_SITE_URL`                 | `https://ohviana.com`                  |
-| `NEXT_PUBLIC_AUTH_MODE`                | `supabase` (Google + email code)       |
-| `NEXT_PUBLIC_SUPABASE_URL`             | `https://<project-ref>.supabase.co`    |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | the publishable key (never the secret) |
+| Variable                               | Production value                        |
+| -------------------------------------- | --------------------------------------- |
+| `NEXT_PUBLIC_API_BASE_URL`             | `https://api.ohviana.com`               |
+| `NEXT_PUBLIC_SITE_URL`                 | `https://ohviana.com`                   |
+| `NEXT_PUBLIC_AUTH_MODE`                | `supabase` (Google + email code)        |
+| `NEXT_PUBLIC_ENVIRONMENT`              | unset (`test` only on test.ohviana.com) |
+| `NEXT_PUBLIC_SUPABASE_URL`             | `https://<project-ref>.supabase.co`     |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | the publishable key (never the secret)  |
 
 They are built into the site, so redeploy after changing them. The site never holds database or
 API secrets. Photos over 4 MB are shrunk in the browser before upload, because Vercel refuses

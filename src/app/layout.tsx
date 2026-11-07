@@ -8,7 +8,7 @@ import { SiteNav } from '@/components/SiteNav';
 import { THEME_SCRIPT } from '@/components/ThemeToggle';
 import { SOCIAL_LINKS } from '@/lib/social';
 import './globals.css';
-import { SITE_URL } from '@/lib/env';
+import { IS_TEST_ENV, SITE_URL } from '@/lib/env';
 
 // Self-hosted at build time by Next (no request to Google from visitors' browsers).
 const font = Plus_Jakarta_Sans({ subsets: ['latin'], display: 'swap', variable: '--font-sans' });
@@ -52,6 +52,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body>
+        {IS_TEST_ENV && (
+          <div className="dev-banner" role="note">
+            Test environment — not the real Ohviana. Bookings here aren&apos;t real and data may be
+            reset.
+          </div>
+        )}
         {process.env.NEXT_PUBLIC_AUTH_MODE === 'dev' && (
           <div className="dev-banner" role="note">
             Testing mode — sign-in without password
