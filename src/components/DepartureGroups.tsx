@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import type { PublicBatch } from '@ohviana/contracts';
 import { IST, dateTime, durationLabel, price, seatsLabel } from '@/lib/format';
 import { logoSrc, mediaUrl } from '@/lib/media';
@@ -82,8 +82,12 @@ function DayGroup({
         </span>
       </div>
       <ul className="departure-cards">
-        {shown.map((b) => (
-          <li key={b.id}>
+        {shown.map((b, i) => (
+          <li
+            key={b.id}
+            className={i >= ROW ? 'revealed' : undefined}
+            style={i >= ROW ? ({ '--i': i - ROW } as CSSProperties) : undefined}
+          >
             <DepartureCard b={b} showTrek={showTrek} via={via} />
           </li>
         ))}
@@ -118,14 +122,24 @@ function DepartureCard({
   via?: string | undefined;
 }) {
   const viaQs = via ? `?via=${encodeURIComponent(via)}` : '';
-  const cover = coverOf(b);
+  // A cover that fails to load falls back to the blank tile, not a broken-image icon.
+  const [coverFailed, setCoverFailed] = useState(false);
+  const cover = coverFailed ? undefined : coverOf(b);
   const bookable = b.availability === 'available';
   return (
     <article className={`card departure-card${bookable ? '' : ' unavailable'}`}>
       {showTrek && (
         <div className="departure-cover">
           {cover ? (
-            <img src={mediaUrl(cover.thumbUrl)} alt="" loading="lazy" />
+            <img
+              src={mediaUrl(cover.thumbUrl)}
+              alt=""
+              loading="lazy"
+              onError={() => setCoverFailed(true)}
+              ref={(el) => {
+                if (brokenBeforeHydration(el)) setCoverFailed(true);
+              }}
+            />
           ) : (
             <span className="departure-cover-blank" aria-hidden="true">
               <Icon name="mountain" size={28} />
@@ -152,7 +166,7 @@ function DepartureCard({
         {showTrek ? (
           <Link href={`/organizers/${b.organizer.slug}`} className="departure-org">
             <OrgMark name={b.organizer.name} logoUrl={b.organizer.logoUrl} />
-            {b.organizer.name}
+            <span className="departure-org-name">{b.organizer.name}</span>
             <span className="verified" title="Verified by Ohviana">
               <Icon name="shield" size={14} />
             </span>
@@ -186,11 +200,11 @@ function DepartureCard({
             <span className="muted small"> /person</span>
           </span>
           {bookable ? (
-            <span className={`badge ${b.seatsLeft <= 5 ? 'warn' : 'ok'}`}>
+            <span className={`badge sentence ${b.seatsLeft <= 5 ? 'warn' : 'ok'}`}>
               {seatsLabel(b.seatsLeft)}
             </span>
           ) : (
-            <span className="badge danger">
+            <span className="badge sentence danger">
               {b.availability === 'sold_out' ? 'Sold out' : 'Closed'}
             </span>
           )}
@@ -284,6 +298,11 @@ function PopularCard({ p }: { p: PopularTrek }) {
   );
 }
 
+/** A server-rendered image can fail before React attaches onError; catch that on mount. */
+function brokenBeforeHydration(el: HTMLImageElement | null): boolean {
+  return !!el && el.complete && el.naturalWidth === 0;
+}
+
 /** The organizer's logo, or their initial on a green tile when they haven't added one. */
 export function OrgMark({
   name,
@@ -294,13 +313,18 @@ export function OrgMark({
   logoUrl: string | null;
   size?: number;
 }) {
-  return logoUrl ? (
+  const [failed, setFailed] = useState(false);
+  return logoUrl && !failed ? (
     <img
       src={logoSrc(logoUrl)}
       alt=""
       className="org-mark"
       style={{ width: size, height: size }}
       loading="lazy"
+      onError={() => setFailed(true)}
+      ref={(el) => {
+        if (brokenBeforeHydration(el)) setFailed(true);
+      }}
     />
   ) : (
     <span
@@ -308,7 +332,8 @@ export function OrgMark({
       style={{ width: size, height: size, fontSize: size * 0.5 }}
       aria-hidden="true"
     >
-      {name.trim()[0]?.toUpperCase()}
+      {/* First letter or digit: "🏔️ Peak Seekers" is "P", not half an emoji. */}
+      {name.match(/[\p{L}\p{N}]/u)?.[0]?.toUpperCase()}
     </span>
   );
 }

@@ -3,6 +3,7 @@ import {
   dateRange,
   dateTime,
   dateTimeIst,
+  durationLabel,
   price,
   seatsLabel,
   thisAndNextWeekIst,
@@ -70,5 +71,14 @@ describe('formatting (always IST)', () => {
     expect(seatsLabel(0)).toBe('Sold out');
     expect(seatsLabel(3)).toBe('Only 3 left');
     expect(seatsLabel(12)).toBe('12 seats left');
+  });
+
+  it('counts trip length in IST nights, not elapsed hours', () => {
+    // Fri 9:30 pm IST → Sun 6:00 am IST: 33 hours, two nights.
+    expect(durationLabel('2026-11-13T16:00:00Z', '2026-11-15T00:30:00Z')).toBe('2 nights');
+    // 5:30 am → 11:30 pm IST the same day.
+    expect(durationLabel('2026-11-14T00:00:00Z', '2026-11-14T18:00:00Z')).toBe('Day trip');
+    // 11:30 pm IST → 4:00 am IST next day crosses one night.
+    expect(durationLabel('2026-11-14T18:00:00Z', '2026-11-14T22:30:00Z')).toBe('1 night');
   });
 });

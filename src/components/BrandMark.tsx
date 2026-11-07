@@ -1,8 +1,15 @@
-/** The Ohviana app icon beside the wordmark (header, footer, sign-in). Decorative: the name follows it. */
-export function BrandMark() {
+/**
+ * The Ohviana logo lockup (mark + wordmark) on its dark tile, used in both themes: header, footer,
+ * sign-in. Pass `label` where nothing else names the brand; inside a labelled link it stays silent.
+ */
+export function BrandMark({ label }: { label?: string }) {
   return (
-    <span className="brand-mark">
-      <img src="/brand/app-icon.png" alt="" width={34} height={34} />
-    </span>
+    <img
+      className="brand-mark"
+      src="/brand/header-dark.webp"
+      alt={label ?? ''}
+      width={422}
+      height={132}
+    />
   );
 }

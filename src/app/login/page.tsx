@@ -33,9 +33,8 @@ export default function LoginPage() {
 function AuthSide() {
   return (
     <aside className="auth-side">
-      <span className="brand" style={{ color: '#fff' }}>
-        <BrandMark />
-        Ohviana
+      <span className="brand">
+        <BrandMark label="Ohviana" />
       </span>
       <h2 style={{ color: '#fff', fontSize: '1.7rem', margin: 0 }}>
         Your trips, departures and bookings — in one place.

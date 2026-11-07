@@ -115,7 +115,10 @@ export function BookingConfirmation({ reference }: { reference: string }) {
   return (
     <div className="stack-lg">
       {justBooked && booking.status === 'confirmed' && (
-        <div className="notice ok cluster" style={{ gap: 12, alignItems: 'flex-start' }}>
+        <div
+          className="notice ok cluster booked-notice"
+          style={{ gap: 12, alignItems: 'flex-start' }}
+        >
           <span className="icon-circle" style={{ width: 40, height: 40 }}>
             <Icon name="check" />
           </span>

@@ -40,6 +40,12 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ohviana
       SUPABASE_URL: https://ci-placeholder.supabase.co
       OHVIANA_APIS_DIR: apis
+      # Checkout signs customers in with an SMS code. Phone sign-in only exists when the API has a
+      # session secret, and OTP_DEV_CODE makes every code 123456 so the tests can type it (no SMS is
+      # sent). Both are throwaway values for this job's disposable database, never real secrets;
+      # the API refuses OTP_DEV_CODE when NODE_ENV=production.
+      AUTH_JWT_SECRET: ci-only-session-secret-not-used-anywhere-else
+      OTP_DEV_CODE: '123456'
     services:
       postgres:
         image: postgres:17-alpine

@@ -20,10 +20,11 @@ interface Props {
 }
 
 function AvailabilityBadge({ b }: { b: PublicBatch }) {
-  if (b.availability === 'sold_out') return <span className="badge danger">Sold out</span>;
-  if (b.availability === 'booking_closed') return <span className="badge">Booking closed</span>;
+  if (b.availability === 'sold_out') return <span className="badge sentence danger">Sold out</span>;
+  if (b.availability === 'booking_closed')
+    return <span className="badge sentence">Booking closed</span>;
   return (
-    <span className={`badge ${b.seatsLeft <= 5 ? 'warn' : 'ok'}`}>
+    <span className={`badge sentence ${b.seatsLeft <= 5 ? 'warn' : 'ok'}`}>
       <Icon name="users" size={13} /> {seatsLabel(b.seatsLeft)}
     </span>
   );
