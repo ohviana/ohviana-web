@@ -2,11 +2,19 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { PublicBatchList, PublicTrekDetail } from '@ohviana/contracts';
 import { DepartureGroups } from '@/components/DepartureGroups';
+import { JsonLd } from '@/components/JsonLd';
 import { Icon, type IconName } from '@/components/Icon';
 import { Mountains } from '@/components/Mountains';
 import { apiFetch, apiFetchOrNotFound, qs } from '@/lib/api';
 import { price } from '@/lib/format';
 import { mediaUrl } from '@/lib/media';
+import {
+  breadcrumbJsonLd,
+  DEFAULT_SHARE_IMAGE,
+  metaDescription,
+  trekImage,
+  trekJsonLd,
+} from '@/lib/seo';
 import { isoDay, type SearchParams } from '@/lib/params';
 
 /** Departures shown on a trek page (grouped by day); a year of weekly trips from a few organizers. */
@@ -23,18 +31,23 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { slug } = await params;
   const trek = await getTrek(slug);
   const where = [trek.district, trek.state].filter(Boolean).join(', ');
-  const description =
-    trek.summary ??
-    `Book the ${trek.name} trek${where ? ` in ${where}` : ''} with verified organizers: dates, prices and pickup points.`;
+  const a = trek.availability;
+  // What a searcher compares: the place, then how many dates and from what price.
+  const facts =
+    a.batchCount > 0 && a.minPricePaise !== null
+      ? `${a.batchCount} upcoming ${a.batchCount === 1 ? 'departure' : 'departures'} from ${price(a.minPricePaise)} with ${a.organizerCount} verified ${a.organizerCount === 1 ? 'organizer' : 'organizers'}.`
+      : 'See dates, prices and pickup points from verified organizers.';
+  const description = metaDescription([
+    trek.summary ?? `Book the ${trek.name} trek${where ? ` in ${where}` : ''}.`,
+    facts,
+  ]);
+  const image = trekImage(trek) ?? DEFAULT_SHARE_IMAGE;
   return {
-    title: `${trek.name} trek — dates & prices`,
+    title: `${trek.name} trek${trek.district ? `, ${trek.district}` : ''} — dates & prices`,
     description,
     alternates: { canonical: `/treks/${trek.slug}` },
-    openGraph: {
-      title: `${trek.name} trek`,
-      description,
-      ...(trek.heroImageUrl ? { images: [trek.heroImageUrl] } : {}),
-    },
+    openGraph: { title: `${trek.name} trek`, description, images: [image] },
+    twitter: { card: 'summary_large_image', images: [image] },
   };
 }
 
@@ -67,6 +80,8 @@ export default async function TrekPage({
 
   return (
     <>
+      <JsonLd data={trekJsonLd(trek)} />
+      <JsonLd data={breadcrumbJsonLd([{ name: trek.name, path: `/treks/${trek.slug}` }])} />
       <section
         className="page-banner"
         style={

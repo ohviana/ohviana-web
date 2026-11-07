@@ -5,6 +5,7 @@ import { CONTACT_EMAIL, SOCIAL_HANDLE, SOCIAL_LINKS } from '@/lib/social';
 export const metadata: Metadata = {
   title: 'Contact us',
   description: `Email ${CONTACT_EMAIL} or message @${SOCIAL_HANDLE} on Instagram or X.`,
+  alternates: { canonical: '/contact' },
 };
 
 const CHANNELS: { name: string; icon: IconName; value: string; href: string }[] = [
