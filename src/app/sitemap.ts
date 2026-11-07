@@ -1,46 +1,42 @@
 import type { MetadataRoute } from 'next';
-import { PublicOrganizerList, PublicTrekList } from '@ohviana/contracts';
-import { apiFetch, qs } from '@/lib/api';
+import { connection } from 'next/server';
+import { PublicSitemap } from '@ohviana/contracts';
+import { apiFetch } from '@/lib/api';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-const MAX_PAGES = 50;
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
 
-export const revalidate = 3600;
+/** The API's list is cached for an hour; a crawler never waits on more than one slow call. */
+const REVALIDATE_S = 3600;
+const TIMEOUT_MS = 8000;
 
-async function collect<T>(
-  fetchPage: (cursor?: string) => Promise<{ items: T[]; nextCursor: string | null }>,
-) {
-  const all: T[] = [];
-  let cursor: string | undefined;
-  for (let i = 0; i < MAX_PAGES; i++) {
-    const page = await fetchPage(cursor);
-    all.push(...page.items);
-    if (!page.nextCursor) break;
-    cursor = page.nextCursor;
-  }
-  return all;
-}
-
+/**
+ * Indexable pages only: listing a noindex page (about, terms, search…) earns a "Submitted URL
+ * marked noindex" error in Search Console. Trek and organizer pages come from one API call.
+ */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [treks, organizers] = await Promise.all([
-    collect((cursor) => apiFetch(`/v1/treks${qs({ cursor, limit: 100 })}`, PublicTrekList)).catch(
-      () => [],
-    ),
-    collect((cursor) =>
-      apiFetch(`/v1/organizers${qs({ cursor, limit: 100 })}`, PublicOrganizerList),
-    ).catch(() => []),
-  ]);
+  // Built per request, never at `next build`: the build must not depend on the API being up.
+  await connection();
+  const pages = await apiFetch('/v1/sitemap', PublicSitemap, {
+    next: { revalidate: REVALIDATE_S },
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  }).catch((err: unknown) => {
+    // Still serve the static pages; Google keeps already-known URLs until the next read.
+    console.error('sitemap: API unavailable, serving static pages only', err);
+    return { treks: [], organizers: [] };
+  });
+
+  const newest = [...pages.treks, ...pages.organizers].reduce<string | undefined>(
+    (max, e) => (!max || e.updatedAt > max ? e.updatedAt : max),
+    undefined,
+  );
   return [
-    { url: SITE_URL, changeFrequency: 'daily', priority: 1 },
-    ...treks.map((t) => ({
-      url: `${SITE_URL}/treks/${t.slug}`,
-      changeFrequency: 'daily' as const,
-      priority: 0.8,
-    })),
-    ...organizers.map((o) => ({
+    // The home page lists popular treks, so it changes when they do.
+    { url: `${SITE_URL}/`, ...(newest ? { lastModified: newest } : {}) },
+    { url: `${SITE_URL}/contact` },
+    ...pages.treks.map((t) => ({ url: `${SITE_URL}/treks/${t.slug}`, lastModified: t.updatedAt })),
+    ...pages.organizers.map((o) => ({
       url: `${SITE_URL}/organizers/${o.slug}`,
-      changeFrequency: 'weekly' as const,
-      priority: 0.6,
+      lastModified: o.updatedAt,
     })),
   ];
 }

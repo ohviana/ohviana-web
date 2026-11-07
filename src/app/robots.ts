@@ -1,14 +1,28 @@
 import type { MetadataRoute } from 'next';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
 
-/** Index canonical trek and organizer pages; keep checkout and personal pages out (PRD: SEO). */
+/**
+ * Index canonical trek and organizer pages; keep checkout, personal pages and the consoles out
+ * (PRD: SEO). `/dashboard` itself stays crawlable: signed out, it is the organizer pitch page.
+ */
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/book/', '/bookings/', '/b/', '/my-bookings', '/account', '/login', '/search'],
+      disallow: [
+        '/book/',
+        '/bookings/',
+        '/b/',
+        '/my-bookings',
+        '/account',
+        '/login',
+        '/search',
+        '/admin',
+        '/dashboard/',
+        '/dev/',
+      ],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
